@@ -45,6 +45,10 @@ const CustomerLayout=()=>{
           }}
           
           />
+         
+
+
+
           <Tabs.Screen 
           name="booking"
           options={{

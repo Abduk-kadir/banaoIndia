@@ -1,7 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import { useDispatch, useSelector } from 'react-redux';
 import ServiceModal from '../../../components/customerComponent/modal';
+import { getCrasoulAction } from '../../../redux/slices/crasoul/crasoulSlice';
+import { getServiceAction } from '../../../redux/slices/service/serviceSlice';
+
+
 const width = Dimensions.get('window').width;
 const numColumns = 3;
 const containerPadding = 10;
@@ -9,16 +14,48 @@ const screenWidth = Dimensions.get('window').width;
 const itemWidth = (screenWidth - containerPadding * 2) / numColumns;
 
 const Home = () => {
+  const dispatch=useDispatch()
   const [isModalVisible, setModalVisible] = useState(false);
   const [selecteddata, setSelectedData] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log('my home is rendering')
-  console.log('index',currentIndex)
+
+  let allService=useSelector((state)=>state?.services?.allServices)
+  let allCrasoul=useSelector((state)=>state?.crasouls?.allCrasoul)
+  allService=allService?allService?.data:[]
+  allCrasoul=allCrasoul?allCrasoul?.data:[]
+  console.log('carsoul data is:',allCrasoul)
+  
+  
   const toggleModal = (item) => {
     setSelectedData(item)
     setModalVisible(!isModalVisible);
   
   };
+
+  useEffect(()=>{
+  
+
+    const fetchDashboardData = async () => {
+      try {
+         let result=await Promise.all([
+          dispatch(getCrasoulAction({})).unwrap(),
+          dispatch(getServiceAction({})).unwrap()
+        ]);
+        console.log("All dashboard data loaded");
+        
+      } catch (err) {
+        
+        console.error("Dashboard loading failed:", err);
+      }
+    };
+    fetchDashboardData();
+
+
+
+
+   
+  
+  },[])
  
   const services = [
     { id: '1', department: 'Ac & Appliance',workType:[{name:"pipe fitting",image:""},{name:"fan fitting",image:""},{name:"washing maching",image:""},{name:"washing maching",image:""}], image: 'https://via.placeholder.com/50' },
@@ -28,7 +65,7 @@ const Home = () => {
     { id: '5', department: 'Home Cleaning', image: 'https://via.placeholder.com/50',workType:[{name:"pipe fitting",image:""},{name:"fan fitting",image:""},{name:"washing maching",image:""},{name:"washing maching",image:""}] },
     { id: '6', department: 'Car Mechanic', image: 'https://via.placeholder.com/50',workType:[{name:"pipe fitting",image:""},{name:"fan fitting",image:""},{name:"washing maching",image:""},{name:"washing maching",image:""}] },
   ];
-  const carouselData = ['Item 1', 'Item 2', 'Item 3'];
+ 
  // Data for the outer FlatList (single item to hold all content)
   const outerData = [{ id: 'main' }];
 
@@ -36,8 +73,8 @@ const Home = () => {
     <TouchableOpacity  onPress={()=>{ toggleModal(item)}}>
     <View style={styles.itemContainer}>
       
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text>{item.department}</Text>
+      <Image source={{ uri: item.serviceimageUrl}} style={styles.image} />
+      <Text>{item.servicetype}</Text>
      
     </View>
     </TouchableOpacity>
@@ -63,19 +100,24 @@ const Home = () => {
       
         width={width}
         height={170}
-        data={carouselData}
+        data={allCrasoul}
         scrollAnimationDuration={2000}
         onSnapToItem={(index) => setCurrentIndex(index)}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <TouchableOpacity>
-            <Text>{item}</Text>
+            <Image source={{ uri: item.image }} style={styles.image} />
+            <Text>{item.tittle}</Text>
+             <Text>{item.description}</Text>
+             <TouchableOpacity style={styles.button}>
+               <Text style={styles.buttonText}>{item.buttonText}</Text>
+             </TouchableOpacity>
             </TouchableOpacity>
           </View>
         )}
       />
       <View style={styles.pagination}>
-        {carouselData.map((_, index) => (
+        {allCrasoul.map((_, index) => (
           <View
             key={index}
             style={[styles.dot, currentIndex === index && styles.activeDot]}
@@ -86,9 +128,9 @@ const Home = () => {
       {/* Provided Services Section */}
       <Text style={styles.head}>Provided Services</Text>
       <FlatList
-        data={services}
+        data={allService}
         renderItem={renderServiceItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         numColumns={numColumns}
         scrollEnabled={false} // Disable scrolling to let outer FlatList handle it
       />
@@ -182,6 +224,16 @@ const styles = StyleSheet.create({
   },
   activeDot: {
     backgroundColor: '#000',
+  },
+   button: {
+    marginTop: 10,
+    backgroundColor: '#1e90ff',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
   },
 });
 
