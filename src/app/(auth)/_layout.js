@@ -40,7 +40,25 @@ export default function AuthLayout() {
        
        }}
         name="userType"/>
+         <Stack.Screen
+        options={{
+       title: "Please fill detail",
+       headerStyle:{backgroundColor:"#4626f9"},
+       headerTintColor:"white"
        
+       }}
+        name="detailServiceprovider"/>
+
+
+
+          <Stack.Screen
+        options={{
+       title: "Please take your photo",
+       headerStyle:{backgroundColor:"#4626f9"},
+       headerTintColor:"white"
+       
+       }}
+        name="takePhoto"/>
       </Stack>
      
     

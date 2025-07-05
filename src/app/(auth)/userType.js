@@ -10,7 +10,7 @@ import {
 const UserType= () => {
   console.log('user type')
   const handleSubmit=(role)=>{
-    role=='customer'?router.replace('detailCustomer'):router.push('servicType')
+    role=='customer'?router.replace('detailCustomer'):router.push('detailServiceprovider')
 
   }
 

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
 import { Provider } from 'react-redux';
 import store from '../redux/store/store';
 
@@ -42,7 +43,7 @@ export default function RootLayout() {
       ) : (
         <Redirect href="/(auth)" />
       )}
-    
+     <Toast/>
     </Provider>
   );
 }

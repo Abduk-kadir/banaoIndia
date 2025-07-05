@@ -20,7 +20,7 @@ export const getCrasoulAction = createAsyncThunk("/crasoul/get",async ({}, { rej
       return data;
       
     } catch (err) {
-      console.log("error is:", err.response.data);
+      console.log("error is:", err?.response?.data);
       return rejectWithValue(err?.response?.data);
     }
   }

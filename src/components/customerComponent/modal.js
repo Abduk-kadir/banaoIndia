@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   gridContainer: {
     flexDirection: 'row',
@@ -90,11 +90,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
    
+   
   },
   image: {
-    width: 50,
-    height: 50,
-    borderRadius: 8,
+    width:80,
+    height:80,
+    resizeMode:"cover",
+    borderRadius: 10,
     marginBottom: 5,
   },
   workText: {

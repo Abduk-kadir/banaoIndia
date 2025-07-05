@@ -1,7 +1,8 @@
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSelector } from 'react-redux';
+const width = Dimensions.get('window').width;
 
 const SelectedWorks = () => {
    const router=useRouter()
@@ -12,31 +13,30 @@ const SelectedWorks = () => {
    let selectedworks=selectedservice.works.filter(elem=>elem.category==category)
    console.log('selected works',selectedworks)
  
-  
-
-  
-
   const renderServiceMan = ({ item }) => (
-    <TouchableOpacity style={styles.card} onPress={() => {}}>
-      <Image source={{ uri: item.workimageUrl }} style={styles.image} />
-      <Text style={styles.name}>{item.name}</Text>
-    
-     
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Book Technician</Text>
-      </TouchableOpacity>
+   <View style={styles.card}>
+  <Image source={{ uri: item.workimageUrl }} style={styles.image} />
+  
+  <View style={styles.textContainer}>
+    <Text style={styles.tittle} >{item.name}</Text>
+    <Text style={styles.description}>{item.description}</Text>
+    <TouchableOpacity style={styles.button}>
+      <Text style={styles.buttonText}>Book Technician</Text>
     </TouchableOpacity>
+  </View>
+</View>
   );
 
   return (
     <View style={styles.container}>
+       <Text style={styles.heading} >{category} services</Text>
       <FlatList
         data={selectedworks}
         renderItem={renderServiceMan}
         keyExtractor={(item) => item._id}
-        numColumns={2}
+        numColumns={1}
         contentContainerStyle={styles.list}
-        columnWrapperStyle={styles.row}
+        //columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -49,7 +49,22 @@ const styles = StyleSheet.create({
   
   },
   list: {
-    padding: 10,
+    padding:5,
+  },
+  heading:{
+  padding:5,
+  fontWeight: 'bold',
+  fontSize: 18,
+  flexWrap: 'wrap',
+  marginTop:10,
+  marginBottom:10
+
+  },
+  textContainer: {
+  flex: 1,
+  marginLeft: 10,
+  justifyContent: 'center',
+ 
   },
   row: {
     justifyContent: 'space-between',
@@ -58,29 +73,36 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
     borderRadius: 10,
-    width: '48%',
     marginBottom: 10,
     alignItems: 'center',
+    flexDirection:'row'
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 10,
+    width: width/2-20,
+    height: 100,
+    resizeMode:'cover',
+    borderRadius:10
   },
-  name: {
-    fontWeight: '400',
-    fontSize:18
+  tittle: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  flexWrap: 'wrap',
   },
-  button: {
-    marginTop: 10,
-    backgroundColor: '#1e90ff',
+  description:{
+    marginBottom:5,
+    marginTop:2,
+  },
+ 
+   button: {
+    backgroundColor: '#f1eaea',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 5,
+    alignSelf: 'flex-start',
+    
   },
   buttonText: {
-    color: '#fff',
+    color: '#d78fd7',
   },
 });
 

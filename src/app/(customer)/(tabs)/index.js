@@ -23,8 +23,7 @@ const Home = () => {
   let allCrasoul=useSelector((state)=>state?.crasouls?.allCrasoul)
   allService=allService?allService?.data:[]
   allCrasoul=allCrasoul?allCrasoul?.data:[]
-  console.log('carsoul data is:',allCrasoul)
-  
+  console.log('width of screen is:',width)
   
   const toggleModal = (item) => {
     setSelectedData(item)
@@ -74,13 +73,12 @@ const Home = () => {
     <View style={styles.itemContainer}>
       
       <Image source={{ uri: item.serviceimageUrl}} style={styles.image} />
-      <Text>{item.servicetype}</Text>
+      <Text style={styles.serviceTitle}>{item.servicetype}</Text>
      
     </View>
     </TouchableOpacity>
     
   );
-
   const renderHorizontalServiceItem = ({ item }) => (
     <TouchableOpacity  onPress={()=>{toggleModal(item)}}>
     <View style={styles.horizontalItem}>
@@ -105,14 +103,17 @@ const Home = () => {
         onSnapToItem={(index) => setCurrentIndex(index)}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <TouchableOpacity>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <Text>{item.tittle}</Text>
-             <Text>{item.description}</Text>
+            <View>
+            <Image source={{ uri: item.image }} style={styles.carsoulimage} />
+            </View>
+            <View style={styles.textContainer}>
+            <Text style={styles.carouselTitle}>{item.tittle}</Text>
+             <Text style={styles.carouselDescription}>{item.description}</Text>
              <TouchableOpacity style={styles.button}>
                <Text style={styles.buttonText}>{item.buttonText}</Text>
              </TouchableOpacity>
-            </TouchableOpacity>
+              </View>
+           
           </View>
         )}
       />
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: containerPadding,
-    alignItems: 'center',
+   
     marginTop: 10,
   },
   horizontalItem: {
@@ -184,32 +185,63 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   itemContainer: {
-    width: itemWidth - 10,
+    width: itemWidth - 8,
     marginHorizontal: 5,
     alignItems: 'center',
     marginVertical: 10,
     borderRadius: 10,
     padding: 2,
-    borderWidth: 1,
+    backgroundColor:"#f1eaea",
+    borderRadius:10
+   
   },
   image: {
-    width: 50,
-    height: 50,
+    width:itemWidth-10,
+    height: 70,
+    resizeMode:"cover",
     borderRadius: 10,
     marginBottom: 1,
+  },
+  carsoulimage:{
+    width:width/2,
+    height:170,
+    resizeMode:"cover",
+    borderRadius: 5,
+
+  },
+  carouselTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color:'white'
+  },
+  carouselDescription: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 10,
+    color:"white"
+  },
+  serviceTitle: {
+    fontWeight: 'bold',
+     textAlign: 'center'
   },
   head: {
     fontWeight: '500',
     fontSize: 18,
     marginBottom: 5,
+    marginTop:5,
     alignSelf: 'flex-start',
   },
   card: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ccc',
+    flexDirection:'row',
     borderRadius: 10,
+    backgroundColor:'black'
+  },
+  textContainer: {
+    width: '50%', // Text takes half the card
+    padding: 10,
+  
   },
   pagination: {
     flexDirection: 'row',
@@ -225,15 +257,15 @@ const styles = StyleSheet.create({
   activeDot: {
     backgroundColor: '#000',
   },
-   button: {
-    marginTop: 10,
-    backgroundColor: '#1e90ff',
+  button: {
+    backgroundColor: 'yellow',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 5,
+    alignSelf: 'flex-start',
   },
   buttonText: {
-    color: '#fff',
+    color: 'black',
   },
 });
 
