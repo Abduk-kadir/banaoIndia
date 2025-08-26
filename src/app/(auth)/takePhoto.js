@@ -45,7 +45,7 @@ const TakePhoto = () => {
         setSelectedImage(savedUri);
         router.push({
           pathname: "/detailServiceprovider",
-          params: {role:"customer", photoUri: savedUri },
+          params: {photoUri: savedUri },
         });
       }
     }
@@ -69,8 +69,8 @@ const TakePhoto = () => {
       if (savedUri) {
         setSelectedImage(savedUri);
         router.push({
-          pathname: "/userDetail",
-          params: {role:"customer" ,photoUri: savedUri },
+          pathname: "/detailServiceprovider",
+          params: {photoUri: savedUri },
         });
       }
     }

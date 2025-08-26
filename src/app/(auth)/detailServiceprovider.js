@@ -2,16 +2,16 @@ import Icon from "@expo/vector-icons/Ionicons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-    Image,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const DetailServiceProvider = () => {
-  const { role, photoUri } = useLocalSearchParams();
+  const {photoUri } = useLocalSearchParams();
   const [name, setName] = useState("");
   const [image, setSelectedPhoto] = useState(null);
   const [location, setLocation] = useState(null);
@@ -22,7 +22,10 @@ const DetailServiceProvider = () => {
     }
   }, [photoUri]);
 
-  const handleNext = () => {};
+  const handleNext = () => {
+
+     router.push('profession')
+  };
 
   return (
     <View style={styles.container}>
@@ -31,7 +34,7 @@ const DetailServiceProvider = () => {
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            marginBottom: 20,
+            marginBottom: 30,
           }}
         >
           <View>
@@ -45,7 +48,7 @@ const DetailServiceProvider = () => {
                   style={{
                     width: 130,
                     height: 130,
-                    borderRadius: 60,
+                    borderRadius: 10,
                     borderWidth: 1,
                     borderColor: "#bfb9e4",
                   }}
@@ -55,7 +58,7 @@ const DetailServiceProvider = () => {
                 />
               ) : (
                 <>
-                  <Text style={{ color: "#444141a8", fontSize: 18 }}>
+                  <Text style={{ color: "#444141a8", fontSize: 18,color:'white' }}>
                     Photo
                   </Text>
                   <Icon name="camera" size={40} color="#bfb9e4" />
@@ -64,7 +67,7 @@ const DetailServiceProvider = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View>
+        <View style={styles.formContainer}>
           <TextInput
             style={styles.input}
             placeholder="Name"
@@ -91,31 +94,44 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+   
+   
   },
+  formContainer: {
+  alignItems: 'center', // centers children horizontally
+ 
+},
   button: {
     padding: 10,
     borderRadius: 5,
     borderWidth: 0.6,
-    paddingVertical: 50,
-    paddingHorizontal: 50,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     borderColor: "#bfb9e4",
     alignItems: "center",
+    backgroundColor:"black"
+  },
+ input: {
+    fontSize: 16,
+    borderWidth: 0.3,
+    paddingTop:15,
+    paddingBottom:15,
+    marginBottom: 20,
+    borderRadius: 5,
+    borderColor: "#bfb9e4",
+    width: '80%'
+    
   },
   button2: {
     backgroundColor: "#ffe003",
     borderRadius: 5,
     padding: 10,
     alignItems: "center",
-    fontVariant: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    fontSize: 16,
-    borderWidth: 0.3,
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+    paddingTop:15,
+    paddingBottom:15,
     borderColor: "#bfb9e4",
+     borderWidth: 0.3,
+    width: '80%'
   },
   image: {
     width: 100,
@@ -123,12 +139,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
 
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 5,
-    elevation: 10,
-    padding: 10,
-    margin: 10,
-  },
+ 
 });
 export default DetailServiceProvider;

@@ -59,6 +59,16 @@ export default function AuthLayout() {
        
        }}
         name="takePhoto"/>
+
+
+         <Stack.Screen
+        options={{
+       title: "Select your Profession",
+       headerStyle:{backgroundColor:"#4626f9"},
+       headerTintColor:"white"
+       
+       }}
+        name="profession"/>
       </Stack>
      
     
