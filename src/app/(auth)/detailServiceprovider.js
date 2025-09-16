@@ -15,16 +15,42 @@ const DetailServiceProvider = () => {
   const [name, setName] = useState("");
   const [image, setSelectedPhoto] = useState(null);
   const [location, setLocation] = useState(null);
+  const [showErrors, setShowErrors] = useState(false);
   const router = useRouter();
   useEffect(() => {
     if (photoUri) {
       setSelectedPhoto(photoUri); // Decode the URI properly
     }
   }, [photoUri]);
+ 
 
   const handleNext = () => {
 
-     router.push('profession')
+    router.push({
+       pathname: '/profession',
+       params: {
+         photoUri: image,
+         name: name,
+         location: location,
+        
+       }
+     });
+  };
+   const validateForm = () => {
+    const hasImage = !!image;
+    const hasName = !!name;
+    const hasLocation = !!location;
+    if (!hasImage || !hasName || !hasLocation) {
+      setShowErrors(true);
+      return false;
+    }
+    setShowErrors(false);
+    return true;
+  };
+  const onPressNext = () => {
+    if (validateForm()) {
+      handleNext();
+    }
   };
 
   return (
@@ -65,6 +91,7 @@ const DetailServiceProvider = () => {
                 </>
               )}
             </TouchableOpacity>
+           {showErrors && !image && <Text style={{color:'red',marginTop:20}}>please enter name</Text>}
           </View>
         </View>
         <View style={styles.formContainer}>
@@ -74,15 +101,15 @@ const DetailServiceProvider = () => {
             value={name}
             onChangeText={setName}
           />
-
+          {showErrors && !name && <Text style={{color:'red',marginTop:5}}>please enter name</Text>}
           <TextInput
             style={styles.input}
             placeholder="Location"
             value={location}
             onChangeText={setLocation}
           />
-
-          <TouchableOpacity style={styles.button2} onPress={handleNext}>
+          {showErrors && !location && <Text style={{color:'red',marginTop:5}}>please enter location</Text>}
+          <TouchableOpacity style={styles.button2} onPress={onPressNext}>
             <Text style={{ fontSize: 22 }}>Next</Text>
           </TouchableOpacity>
         </View>

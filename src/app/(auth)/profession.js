@@ -1,24 +1,40 @@
-import { useState } from 'react';
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
+import { useDispatch, useSelector } from 'react-redux';
+import { getServiceAction } from "../../redux/slices/service/serviceSlice";
 
 const Profession = () => {
+    const dispatch=useDispatch()
+    const {name, photoUri,location } = useLocalSearchParams();
+    let allService=useSelector((state)=>state?.services?.allServices)
+    console.log('all services',allService)
+
+   let data=allService?allService.data:[]
+   data=data.map(elem=>({id:elem._id,label:elem.servicetype}))
+   console.log('data',data)
   const services = [
     { id: '1', label: 'Ac & Home Appliance', value: 'Ac & Home Appliance' },
     { id: '2', label: 'Plumbing', value: 'Plumbing' },
   ];
-
+   //console.log(name, photoUri,location);
   const [selectedId, setSelectedId] = useState();
   
   const handleSubmit=()=>{
     console.log('value is:',selectedId)
   }
 
+useEffect(()=>{
+  dispatch(getServiceAction({}))
+},[])
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.head}>Select Your Profession</Text>
       <RadioGroup
-        radioButtons={services}
+        radioButtons={data}
         onPress={setSelectedId}
         selectedId={selectedId}
         containerStyle={styles.radioGroup}

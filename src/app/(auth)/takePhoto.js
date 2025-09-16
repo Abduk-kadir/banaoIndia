@@ -1,6 +1,6 @@
 import Icon from "@expo/vector-icons/Ionicons";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
