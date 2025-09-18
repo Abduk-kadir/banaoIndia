@@ -14,7 +14,7 @@ import { emailVerifyAction, enterEmailAction } from "../../redux/slices/email/em
 
 const Otp = () => {
   const dispatch = useDispatch();
-  const email = useSelector((state) => state.emails.email.data);
+  const email = useSelector((state) =>state.emails.email.data);
   const loading = useSelector((state) => state.emails.verifyLoading);
   const emailLoading = useSelector((state) => state?.emails?.emailLoading);
   const success = useSelector((state) => state?.emails?.verifyData?.success);

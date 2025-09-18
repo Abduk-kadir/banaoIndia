@@ -4,25 +4,22 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { useDispatch, useSelector } from 'react-redux';
 import { getServiceAction } from "../../redux/slices/service/serviceSlice";
+import { createServiceProviderAction } from "../../redux/slices/users/serviceproviderSlice";
 
 const Profession = () => {
     const dispatch=useDispatch()
     const {name, photoUri,location } = useLocalSearchParams();
     let allService=useSelector((state)=>state?.services?.allServices)
-    console.log('all services',allService)
-
-   let data=allService?allService.data:[]
+    const email = useSelector((state) =>state?.emails?.email?.data);
+   let data=allService?allService?.data:[]
    data=data.map(elem=>({id:elem._id,label:elem.servicetype}))
-   console.log('data',data)
-  const services = [
-    { id: '1', label: 'Ac & Home Appliance', value: 'Ac & Home Appliance' },
-    { id: '2', label: 'Plumbing', value: 'Plumbing' },
-  ];
+  
+  
    //console.log(name, photoUri,location);
   const [selectedId, setSelectedId] = useState();
   
   const handleSubmit=()=>{
-    console.log('value is:',selectedId)
+   dispatch(createServiceProviderAction({name,email,location,selectedId,photoUri}))
   }
 
 useEffect(()=>{

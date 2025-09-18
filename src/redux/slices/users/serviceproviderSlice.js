@@ -1,30 +1,29 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import baseURL from "../../../utils/baseUrl";
 const initialState={
     loading:false,
     error:null,
     serviceProvider:null,
    
 }
-export const createServiceProviderAction=createAsyncThunk('/serviceProvider/create',async({email,name,location,id,image},{rejectWithValue,getState,dispatch})=>{
+export const createServiceProviderAction=createAsyncThunk('/serviceProvider/create',async({name,email,location,selectedId,photoUri},{rejectWithValue,getState,dispatch})=>{
        try{
-      console.log('service Provider create action is called')
-
+      console.log('service provider action is called')
        const formData = new FormData();
        formData.append("name", name);
        formData.append("email", email);
        formData.append('location',location)
-       formData.append('id',id)
-       formData.append("image", image); // Assuming photo is a File object
+       formData.append('id',selectedId)
+       formData.append("image", photoUri); // Assuming photo is a File object
        const config = {
         headers: {
           "Content-Type": "multipart/form-data",
           },
       };
-         const {data}=await axios.post(`${baseURL}/api/createserviceprovider`,formData,config)
-         console.log('data is:',data)
-        /// await AsyncStorage.setItem('user',JSON.stringify(data.data))
+      console.log('hijfdkjfkdljfkdsjfkdjfkldjfkldj')
+        const {data}=await axios.post(`${baseURL}/api/createserviceprovider`,formData,config)
+        console.log('data is:',data)
+        await AsyncStorage.setItem('user',JSON.stringify(data.data))
          return data
        }
        catch(err){
@@ -34,8 +33,6 @@ export const createServiceProviderAction=createAsyncThunk('/serviceProvider/crea
        }
 
 })
-
-
 
 const serviceProviderSlice=createSlice({
      name:"serviceProvider",
