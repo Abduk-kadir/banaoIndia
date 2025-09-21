@@ -14,9 +14,11 @@ export const enterEmailAction=createAsyncThunk('/email/enter',async({email},{rej
        try{
          console.log('email action is fired')
          const {data}=await axios.post(`${baseURL}/api/createuser`,{email})
+         console.log('data is :',data)
          return data
        }
        catch(err){
+        console.log('error is:',err.response?.data)
         return rejectWithValue(err?.response?.data)
        }
 
@@ -27,7 +29,8 @@ export const emailVerifyAction=createAsyncThunk('/email/verify',async({email,otp
     try{
         console.log('verify otp action is called')
         const {data}=await axios.post(`${baseURL}/api/verifyuser`,{email,otp})
-        console.log(data)
+        
+        console.log('data is:',data)
         return data
     }
     catch(err){

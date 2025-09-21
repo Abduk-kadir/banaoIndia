@@ -1,8 +1,10 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../../components/loader';
+import ToastMessage from '../../components/toastmessage';
 import { getServiceAction } from "../../redux/slices/service/serviceSlice";
 import { createServiceProviderAction } from "../../redux/slices/users/serviceproviderSlice";
 
@@ -11,25 +13,40 @@ const Profession = () => {
     const {name, photoUri,location } = useLocalSearchParams();
     let allService=useSelector((state)=>state?.services?.allServices)
     const email = useSelector((state) =>state?.emails?.email?.data);
-   let data=allService?allService?.data:[]
-   data=data.map(elem=>({id:elem._id,label:elem.servicetype}))
-  
-  
+    const loading=useSelector((state)=>state?.serviceProviders?.loading)
+    const success=useSelector((state)=>state?.serviceProviders?.serviceProvider?.success)
+    const successMessage=useSelector((state)=>state?.serviceProviders?.serviceProvider?.message)
+    let data=allService?allService?.data:[]
+    data=data.map(elem=>({id:elem._id,label:elem.servicetype}))
+   console.log('success is:',success)
+   console.log('loading is:',loading)
    //console.log(name, photoUri,location);
   const [selectedId, setSelectedId] = useState();
   
   const handleSubmit=()=>{
+    console.log('submit is called')
    dispatch(createServiceProviderAction({name,email,location,selectedId,photoUri}))
   }
 
 useEffect(()=>{
+   if (success) {
+    ToastMessage('success', successMessage, 'Please set our service price');
+    setTimeout(()=>{
+     router.replace('(serviceProvider)')
+
+    },500)
+    return;
+  
+  }
   dispatch(getServiceAction({}))
-},[])
+},[success])
 
 
   return (
     <View style={styles.container}>
-      <Text style={styles.head}>Select Your Profession</Text>
+      {
+      loading?<Loader/>:(
+      <><Text style={styles.head}>Select Your Profession</Text>
       <RadioGroup
         radioButtons={data}
         onPress={setSelectedId}
@@ -44,6 +61,8 @@ useEffect(()=>{
       >
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
+      </>)
+}
     </View>
   );
 };
