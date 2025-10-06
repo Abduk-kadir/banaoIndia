@@ -16,16 +16,20 @@ const SelectedWorks = () => {
   const renderServiceMan = ({ item }) => (
    <View style={styles.card}>
   <Image source={{ uri: item.workimageUrl }} style={styles.image} />
-  
   <View style={styles.textContainer}>
     <Text style={styles.tittle} >{item.name}</Text>
     <Text style={styles.description}>{item.description}</Text>
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={booktechnician}>
       <Text style={styles.buttonText}>Book Technician</Text>
     </TouchableOpacity>
   </View>
 </View>
   );
+
+  const booktechnician=()=>{
+    console.log('book technician is called')
+    router.push('servicemanBooking')
+  }
 
   return (
     <View style={styles.container}>

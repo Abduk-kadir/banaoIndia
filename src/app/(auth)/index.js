@@ -55,6 +55,7 @@ const Email = () => {
         style={styles.button}
         onPress={handleSubmit}
       >
+        
         <Text style={{ fontSize: 23, color: "white" }}>Submit</Text>
       </TouchableOpacity>
       </>

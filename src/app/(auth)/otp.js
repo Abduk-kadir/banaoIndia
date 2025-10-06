@@ -65,7 +65,8 @@ const Otp = () => {
     if (success) {
       ToastMessage("success", successMessage, "please select user type");
       setTimeout(() => {
-        router.replace("userType");
+        router.replace("location");
+        //router.replace("userType");
       }, 500);
     }
 

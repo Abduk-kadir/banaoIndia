@@ -14,6 +14,14 @@ export default function CustomerMainLayout() {
           headerTintColor: 'white',
         }}
       />
+       <Stack.Screen
+        name="servicemanBooking"
+        options={{
+          title: 'Book Nearest Service provider',
+          headerStyle: { backgroundColor: '#4626f9' },
+          headerTintColor: 'white',
+        }}
+      />
     </Stack>
     
    

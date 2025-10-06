@@ -69,6 +69,16 @@ export default function AuthLayout() {
        
        }}
         name="profession"/>
+        <Stack.Screen
+        options={{
+       title: "your Location",
+       headerStyle:{backgroundColor:"#4626f9"},
+       headerTintColor:"white"
+       
+       }}
+        name="location"/>
+
+
       </Stack>
      
     
