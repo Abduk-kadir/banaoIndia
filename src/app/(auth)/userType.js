@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   Image,
   StyleSheet,
@@ -8,9 +8,22 @@ import {
 } from "react-native";
 
 const UserType= () => {
+  const { humanReadableLocation, location } = useLocalSearchParams();
+  console.log(humanReadableLocation,location)
   console.log('user type')
   const handleSubmit=(role)=>{
-    role=='customer'?router.replace('detailCustomer'):router.push('detailServiceprovider')
+    const params = { humanReadableLocation, location }; // Data to pass
+    if (role === "customer") {
+      router.replace({
+        pathname: "detailCustomer",
+        params,
+      });
+    } else {
+      router.replace({
+        pathname: "detailServiceprovider",
+        params,
+      });
+    }
 
   }
 

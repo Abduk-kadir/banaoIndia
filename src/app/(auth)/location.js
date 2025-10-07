@@ -1,22 +1,23 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
-    Alert,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import Loader from "../../components/loader";
+import ToastMessage from "../../components/toastmessage";
 
 const LocationScreen = () => {
   const [location, setLocation] = useState("");
   const [humanReadableLocation, setHumanReadableLocation] = useState("");
   const [loading, setLoading] = useState(false);
-  const [manualInput, setManualInput] = useState(false);
+ 
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -27,7 +28,7 @@ const LocationScreen = () => {
           "Permission Denied",
           "Location permission is required to fetch your location automatically. Please enter it manually."
         );
-        setManualInput(true);
+      
         setLoading(false);
         return;
       }
@@ -52,30 +53,37 @@ const LocationScreen = () => {
           (part) => part
         );
         const formattedAddress =
-          addressParts.length > 0 ? addressParts.join(", ") : "Unknown Address";
+        addressParts.length > 0 ? addressParts.join(", ") : "Unknown Address";
         setHumanReadableLocation(formattedAddress);
         setLocation(`${latitude},${longitude}`);
+        ToastMessage('success','Location','Fetched location successfully')
       } else {
         setHumanReadableLocation("Address not found");
-        setLocation(`${latitude}, ${longitude}`);
+        setLocation(`${latitude},${longitude}`);
+         ToastMessage('error','Location','address not found')
       }
     } catch (error) {
       console.error("Error fetching location:", error);
-      Alert.alert(
-        "Error",
-        "Unable to fetch location. Please try again or enter it manually."
-      );
+      ToastMessage('error','Location','Error fetching location')
       setManualInput(true);
     } finally {
       setLoading(false);
     }
   };
+  const handleNext=()=>{
+   router.replace({
+      pathname: "userType",
+      params: {
+        humanReadableLocation,
+        location,
+      },
+    });
+  }
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#4626f9" barStyle="light-content" />
-      <Text style={styles.head}>Turn on Your Location</Text>
-
+      
       {loading ? (
         <Loader />
       ) : (
@@ -85,26 +93,12 @@ const LocationScreen = () => {
             <Text style={styles.buttonText}>Enable Fetch Location</Text>
           </TouchableOpacity>
 
-          {manualInput && (
-            <>
-              <Text style={styles.manualInputLabel}>
-                Enter location manually:
-              </Text>
-              <TextInput
-                style={styles.input}
-                value={humanReadableLocation}
-                onChangeText={setHumanReadableLocation}
-                placeholder="Enter your location"
-                placeholderTextColor="#888"
-              />
-            </>
-          )}
+          {humanReadableLocation&&<TouchableOpacity style={styles.button2} onPress={handleNext}>
+           <Text style={styles.buttonText}>Next</Text>
+          </TouchableOpacity>}
 
-          {humanReadableLocation ? (
-            <Text style={styles.locationText}>
-              Location: {humanReadableLocation}
-            </Text>
-          ) : null}
+         
+         
         </>
       )}
     </View>
@@ -119,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   head: {
-    marginTop: 40,
+    marginTop: 60,
     fontSize: 22,
     marginBottom: 30,
     fontWeight: "500",
@@ -133,6 +127,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center",
     justifyContent: "center",
+    marginTop:40
+  },
+  button2: {
+   
+    backgroundColor: "rgba(245, 223, 27, 1)",
+    borderRadius: 8,
+    paddingHorizontal: 60,
+    paddingVertical:12,
+    marginTop:20
+   
   },
   icon: {
     marginRight: 10, // Increased spacing for better balance

@@ -1,5 +1,5 @@
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,20 +10,20 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../components/loader";
 import ToastMessage from "../../components/toastmessage";
-import { createUserAction, getAUserAction } from "../../redux/slices/users/userSlice";
+import { createUserAction } from "../../redux/slices/users/userSlice";
 
 const UserDetail = () => {
   const dispatch = useDispatch();
+  const { humanReadableLocation,location} = useLocalSearchParams();
   const success = useSelector((state) => state?.users?.gUser?.success);
   const cSuccess=useSelector((state)=>state?.users?.user?.success)
   const loading=useSelector((state)=>state?.users?.loading)
   const nameError=useSelector((state)=>state?.users?.error?.message?.name)
   const locationError=useSelector((state)=>state?.users?.error?.message?.location)
-
   const email = useSelector((state) => state.emails.email.data);
   console.log("success is *************:", success);
   const [name, setName] = useState("");
-  const [location, setLocation] = useState("");
+  
   const handleSubmit = async () => {
   let result = await dispatch(createUserAction({ email, name, location }));
   console.log("check****", createUserAction.fulfilled.match(result));
@@ -36,20 +36,7 @@ const UserDetail = () => {
   }
 };
  
-  useEffect(() => {
-    console.log("go inside use effect");
-    async function fetchData() {
-      let result = await dispatch(getAUserAction({ email }));
-      if (getAUserAction.fulfilled.match(result)) {
-        ToastMessage("success", "Welcome Again", "You are already register");
-        router.replace("(customer)");
-       
-      } else {
-         console.log('error')
-      }
-    }
-    fetchData()
-  }, []);
+  
 
   return (
     <View style={styles.container}>
@@ -60,12 +47,7 @@ const UserDetail = () => {
         onChangeText={setName}
       />
        {nameError&&<Text style={{color:'red',marginTop:20}}>{nameError}</Text>}
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Location"
-        value={location}
-        onChangeText={setLocation}
-      />
+     
        {locationError&&<Text style={{color:'red',marginTop:20}}>{locationError}</Text>}
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={{ fontSize: 23, color: "white" }}>Submit</Text>

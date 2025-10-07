@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import ServiceModal from '../../../components/customerComponent/modal';
 import { getCrasoulAction } from '../../../redux/slices/crasoul/crasoulSlice';
 import { getServiceAction } from '../../../redux/slices/service/serviceSlice';
-
-
 const width = Dimensions.get('window').width;
 const numColumns = 3;
 const containerPadding = 10;
@@ -18,7 +16,7 @@ const Home = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selecteddata, setSelectedData] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  console.log('location is:',location)
   let allService=useSelector((state)=>state?.services?.allServices)
   let allCrasoul=useSelector((state)=>state?.crasouls?.allCrasoul)
   allService=allService?allService?.data:[]
