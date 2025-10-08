@@ -29,8 +29,13 @@ const UserDetail = () => {
   console.log("check****", createUserAction.fulfilled.match(result));
 
   if (createUserAction.fulfilled.match(result)) {
+    const params = { humanReadableLocation, location };
     ToastMessage("success", "Welcome", "solve your problem with us");
-    router.replace("(customer)");
+     router.replace({
+        pathname: "(customer)",
+        params,
+      });
+   
   } else {
     console.log("error");
   }

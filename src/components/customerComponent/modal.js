@@ -14,14 +14,14 @@ const ServiceModal = ({ isModalVisible, toggleModal, data }) => {
 }, []);
   
   const handlesubmit=(category)=>{
-    console.log('category is:',category)
+   
     let selectedWorks=works.filter(elem=>elem.category==category)
    
     toggleModal()
   
     router.push({
   pathname: '/(customer)/selectedWorks',
-  params: { category, servicetype: data.servicetype }
+  params: { category, servicetype: data.servicetype,id:data._id }
 });
     
   }
@@ -47,7 +47,7 @@ const ServiceModal = ({ isModalVisible, toggleModal, data }) => {
         style={styles.modalWrapper}
       >
         <View style={styles.modalContainer}>
-          <Text style={styles.title}>Home applicances</Text>
+          <Text style={styles.title}>{data.servicetype}</Text>
 
           {/* Scrollable content */}
           <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>

@@ -5,6 +5,9 @@ const initialState={
     loading:false,
     error:null,
     serviceProvider:null,
+    nearestLoading:false,
+    nearestError:null,
+    nearestServiceProvider:null
    
 }
 export const createServiceProviderAction=createAsyncThunk('/serviceProvider/create',async({name,email,location,selectedId,photoUri},{rejectWithValue,getState,dispatch})=>{
@@ -43,6 +46,22 @@ export const createServiceProviderAction=createAsyncThunk('/serviceProvider/crea
 
 })
 
+export const getNearestServiceProviderAction=createAsyncThunk('/serviceProvider/nearest',async({ longitude,latitude,servicetype},{rejectWithValue,getState,dispatch})=>{
+       try{
+         console.log('nearest Service provider is called')
+         console.log(longitude,latitude,servicetype)
+         const {data}=await axios.get(`${baseURL}/api/nearestServiceProvider/${longitude}/${latitude}/${servicetype}`)
+         return data
+       }
+       catch(err){
+        console.log('error is:',err.response.data)
+        return rejectWithValue(err?.response?.data)
+
+       }
+
+})
+
+
 const serviceProviderSlice=createSlice({
      name:"serviceProvider",
      initialState,
@@ -60,6 +79,21 @@ const serviceProviderSlice=createSlice({
         builder.addCase(createServiceProviderAction.rejected,(state,action)=>{
             state.error=action.payload
             state.loading=false;
+           
+        });
+        builder.addCase(getNearestServiceProviderAction.pending,(state,action)=>{
+         
+            state.nearestLoading=true;
+        });
+        builder.addCase(getNearestServiceProviderAction.fulfilled,(state,action)=>{
+            state.nearestServiceProvider=action.payload
+            state.nearestLoading=false;
+            state.nearestError=null
+          
+        });
+        builder.addCase(getNearestServiceProviderAction.rejected,(state,action)=>{
+            state.error=action.payload
+            state.nearestLoading=false;
            
         });
 

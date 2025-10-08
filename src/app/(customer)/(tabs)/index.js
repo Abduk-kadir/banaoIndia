@@ -16,14 +16,15 @@ const Home = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selecteddata, setSelectedData] = useState(null)
   const [currentIndex, setCurrentIndex] = useState(0);
-  console.log('location is:',location)
+
   let allService=useSelector((state)=>state?.services?.allServices)
   let allCrasoul=useSelector((state)=>state?.crasouls?.allCrasoul)
   allService=allService?allService?.data:[]
   allCrasoul=allCrasoul?allCrasoul?.data:[]
-  console.log('width of screen is:',width)
+ 
   
   const toggleModal = (item) => {
+   // console.log('item is:',item)
     setSelectedData(item)
     setModalVisible(!isModalVisible);
   

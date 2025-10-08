@@ -8,10 +8,11 @@ const SelectedWorks = () => {
    const router=useRouter()
    let allService=useSelector((state)=>state?.services?.allServices)
    allService=allService?allService?.data:[]
-   const { category, servicetype } = useLocalSearchParams();
+   const { category, servicetype,id } = useLocalSearchParams();
    let selectedservice=allService.find(elem=>elem.servicetype==servicetype)
    let selectedworks=selectedservice.works.filter(elem=>elem.category==category)
-   console.log('selected works',selectedworks)
+  // console.log('selected works',selectedworks)
+  // console.log('id:',id)
  
   const renderServiceMan = ({ item }) => (
    <View style={styles.card}>
@@ -19,16 +20,20 @@ const SelectedWorks = () => {
   <View style={styles.textContainer}>
     <Text style={styles.tittle} >{item.name}</Text>
     <Text style={styles.description}>{item.description}</Text>
-    <TouchableOpacity style={styles.button} onPress={booktechnician}>
+    <TouchableOpacity style={styles.button} onPress={()=>booktechnician(item.name)}>
       <Text style={styles.buttonText}>Book Technician</Text>
     </TouchableOpacity>
   </View>
 </View>
   );
 
-  const booktechnician=()=>{
+  const booktechnician=(name)=>{
     console.log('book technician is called')
-    router.push('servicemanBooking')
+    console.log('name of work',name)
+    router.push({
+      pathname:"servicemanBooking",
+      params:{servicetype,category,name}
+    })
   }
 
   return (

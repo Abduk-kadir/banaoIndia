@@ -1,7 +1,17 @@
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ServiceManBooking = () => {
+  const {servicetype,category,name}=useLocalSearchParams()
+  //console.log(servicetype,category,name)
+
+   useEffect(()=>{
+
+   },[])
+
+
   const data = [
     {
       id: 1,
