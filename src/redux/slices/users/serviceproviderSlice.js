@@ -51,6 +51,7 @@ export const getNearestServiceProviderAction=createAsyncThunk('/serviceProvider/
          console.log('nearest Service provider is called')
          console.log(longitude,latitude,servicetype)
          const {data}=await axios.get(`${baseURL}/api/nearestServiceProvider/${longitude}/${latitude}/${servicetype}`)
+         console.log('service provider are:',data)
          return data
        }
        catch(err){
