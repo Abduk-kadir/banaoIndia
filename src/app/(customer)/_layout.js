@@ -22,6 +22,14 @@ export default function CustomerMainLayout() {
           headerTintColor: 'white',
         }}
       />
+      <Stack.Screen
+        name="detailServicemanBooking"
+        options={{
+          title: 'Book Now',
+          headerStyle: { backgroundColor: '#4626f9' },
+          headerTintColor: 'white',
+        }}
+      />
     </Stack>
     
    

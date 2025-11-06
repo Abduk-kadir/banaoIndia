@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -30,6 +30,12 @@ const ServiceManBooking = () => {
     getUser();
   }, []);
 
+  const bookNow=(id)=>{
+    router.push('detailServicemanBooking')
+    console.log('id is:',id)
+  }
+
+
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -59,10 +65,10 @@ const ServiceManBooking = () => {
       <Text style={styles.category}>{category}</Text>
       <Text style={styles.serviceName}>{name}</Text>
       <Text style={styles.price}>
-        Price: ₹{item.works.find((elem) => elem.name === name).price}
+        Price: ₹{item.works.find((elem) => elem.name === name)?.price}
       </Text>
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Book Now</Text>
+        <Text style={styles.buttonText} onPress={()=>bookNow(item?._id)}>Book Now</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );
