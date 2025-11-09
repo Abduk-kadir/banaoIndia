@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNearestServiceProviderAction } from '../../redux/slices/users/serviceproviderSlice';
 
+
 const ServiceManBooking = () => {
   const dispatch = useDispatch();
   const { servicetype, category, name } = useLocalSearchParams();
@@ -31,7 +32,12 @@ const ServiceManBooking = () => {
   }, []);
 
   const bookNow=(id)=>{
-    router.push('detailServicemanBooking')
+   
+    router.push({
+    pathname: 'detailServicemanBooking',
+    params: { id }
+  });
+ 
     console.log('id is:',id)
   }
 

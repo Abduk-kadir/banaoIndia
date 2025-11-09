@@ -1,6 +1,22 @@
+import { useLocalSearchParams } from "expo-router";
+import { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { getreviewAction } from "../../redux/slices/review/review";
 
 const DetailServicemanBooking = () => {
+ const dispatch=useDispatch()
+ const { id } = useLocalSearchParams();
+  let allService=useSelector((state)=>state?.reviews?.review?.data)
+ let loading=useSelector((state)=>state?.reviews)
+
+ useEffect(() => {
+  
+  dispatch(getreviewAction({id}));
+ 
+}, []); // dependency array
+
+
   return (
     <View style={styles.container}>
       {/* Booking Details */}
@@ -9,7 +25,6 @@ const DetailServicemanBooking = () => {
         <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
         <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
         <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
-        
       </View>
 
       {/* Bottom Buttons */}
