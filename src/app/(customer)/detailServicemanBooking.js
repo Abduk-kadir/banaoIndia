@@ -1,31 +1,56 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getreviewAction } from "../../redux/slices/review/review";
 
 const DetailServicemanBooking = () => {
- const dispatch=useDispatch()
- const { id } = useLocalSearchParams();
-  let allService=useSelector((state)=>state?.reviews?.review?.data)
- let loading=useSelector((state)=>state?.reviews)
+  const dispatch = useDispatch();
+  const { id, name, category } = useLocalSearchParams();
+  const nearestServiceProviders = useSelector((state) => state?.serviceProviders?.nearestServiceProvider?.providers);
+  const item = nearestServiceProviders?.find(elem => elem._id === id);
+   const review = useSelector((state) => state?.reviews?.review?.data);
 
- useEffect(() => {
-  
-  dispatch(getreviewAction({id}));
- 
-}, []); // dependency array
+  useEffect(() => {
+    if (id) {
+      dispatch(getreviewAction({ id }));
+    }
+  }, [id, dispatch]);
 
+  // Safe access
+  const selectedWork = item?.works?.find((elem) => elem.name === name);
+  const price = selectedWork?.price;
 
   return (
     <View style={styles.container}>
       {/* Booking Details */}
-      <View style={styles.content}>
-        <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
-        <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
-        <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
-        <Text style={styles.text}>fjkdghjkfkdhgkjfdhgj</Text>
-      </View>
+      <ScrollView style={styles.content}>
+        {/* Image */}
+        <View style={styles.imageWrapper}>
+          <Image
+            source={{ uri: item?.photo || 'https://via.placeholder.com/400x200' }}
+            style={styles.image}
+           
+          />
+        </View>
+
+        {/* Details */}
+        <View style={styles.detailsContainer}>
+          {/* Name */}
+          <Text style={styles.name}>{item?.name || 'Unknown'}</Text>
+
+          {/* Category Tag */}
+          <View style={styles.categoryTag}>
+            <Text style={styles.categoryText}>{category}</Text>
+          </View>
+
+          {/* Service Name */}
+          <Text style={styles.serviceName}>{name}</Text>
+
+          {/* Price */}
+          <Text style={styles.price}>₹{price || 'N/A'}</Text>
+        </View>
+      </ScrollView>
 
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
@@ -46,50 +71,96 @@ export default DetailServicemanBooking;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
-    padding:5
+    backgroundColor: '#fff',
   },
   content: {
     flex: 1,
-  
+    marginTop:10
   },
-  text: {
-    fontSize: 16,
-    marginVertical: 5,
+
+  // Image
+  imageWrapper: {
+    width: '100%',
+    height: 240,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 16,
+    
   },
+  image: {
+    width: '100%',
+    height: '170%', 
+    resizeMode: 'cover',
+  },
+
+  // Details
+  detailsContainer: {
+    paddingHorizontal: 16,
+  },
+  name: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 6,
+  },
+  categoryTag: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#e4576f',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginBottom: 10,
+  },
+  categoryText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  serviceName: {
+    fontSize: 18,
+    color: '#444',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  price: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#e4576f',
+    marginBottom: 20,
+  },
+
+  // Buttons
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor:"#f5f5f5",
-    paddingBottom:10,
-    paddingTop:10
+    backgroundColor: "#f5f5f5",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   button: {
     flex: 1,
-    paddingVertical: 15,
-    borderRadius: 10,
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: "center",
-    marginHorizontal: 5,
-    marginBottom: 0
+    marginHorizontal: 6,
   },
   beforeButton: {
-   borderWidth:1,
-   borderColor:"#e4576f"
+    borderWidth: 1.5,
+    borderColor: "#e4576f",
   },
   afterButton: {
-    backgroundColor: "#e4576f", // blue
+    backgroundColor: "#e4576f",
   },
-  beforeButtonText:{
-   color:"#e4576f",
-     fontSize: 16,
+  beforeButtonText: {
+    color: "#e4576f",
+    fontSize: 16,
     fontWeight: "600",
-    
-
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
-    
   },
 });

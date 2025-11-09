@@ -35,10 +35,10 @@ const ServiceManBooking = () => {
    
     router.push({
     pathname: 'detailServicemanBooking',
-    params: { id }
+    params: { id:id,name:name,category:category }
   });
  
-    console.log('id is:',id)
+   
   }
 
 
@@ -64,7 +64,7 @@ const ServiceManBooking = () => {
   };
 
   const renderServiceMan = ({ item }) => (
-    <TouchableOpacity style={styles.card}>
+    <View style={styles.card}>
       <Image source={{ uri: item.photo }} style={styles.image} />
       <Text style={styles.name}>{item.name}</Text>
       <View style={styles.starContainer}>{renderStars(item.rating)}</View>
@@ -76,7 +76,7 @@ const ServiceManBooking = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText} onPress={()=>bookNow(item?._id)}>Book Now</Text>
       </TouchableOpacity>
-    </TouchableOpacity>
+    </View>
   );
 
   return (

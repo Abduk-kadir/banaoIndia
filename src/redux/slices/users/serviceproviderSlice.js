@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseUrl";
@@ -35,7 +36,7 @@ export const createServiceProviderAction=createAsyncThunk('/serviceProvider/crea
      
         const {data}=await axios.post(`${baseURL}/api/createserviceprovider`,formData,config)
         console.log('data is:',data)
-       // await AsyncStorage.setItem('user',JSON.stringify(data.data))
+        await AsyncStorage.setItem('serviceprovider',JSON.stringify(data.data))
         return data
        }
        catch(err){
