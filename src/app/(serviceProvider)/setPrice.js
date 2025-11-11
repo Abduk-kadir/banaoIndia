@@ -1,30 +1,29 @@
 // App.js  (React Native – plain JavaScript)
 import { useReducer } from 'react';
 import {
-    Button,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View
+  Button,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
-// ---- Reducer (pure JS) ----
-const initialState = {
-  price1: '',
-  price2: '',
-  price3: '',
-  price4: '',
-  price5: '',
-};
+const initialState = [
+  { name: "ac service", price: "0" },  // Use string for TextInput
+  { name: "gas fill", price: "0" }
+];
 
 function formReducer(state, action) {
   switch (action.type) {
     case 'UPDATE_FIELD':
-      return {
-        ...state,
-        [action.field]: action.value,
+      const newState = [...state];
+      newState[action.index] = {
+        ...newState[action.index],
+        [action.field]: action.value
       };
+      return newState;
     case 'RESET':
       return initialState;
     default:
@@ -32,34 +31,33 @@ function formReducer(state, action) {
   }
 }
 
-// ---- Component ----
 export default function SetPrice() {
   const [state, dispatch] = useReducer(formReducer, initialState);
+  const works = useSelector((state) => state);
+  console.log('allworks*******:', works);
 
-  // Allow only numbers (including decimals) or empty string
-  const handleChange = (field, value) => {
-  
-      dispatch({ type: 'UPDATE_FIELD', field, value });
-    
+  const handleChange = (index, field, value) => {
+    dispatch({ type: 'UPDATE_FIELD', index, field, value });
   };
 
   const handleSubmit = () => {
-    
+    console.log('Submitted Prices:', state);
+    // Add your submit logic here
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Set Your Own Price</Text>
 
-      {['price1', 'price2', 'price3', 'price4', 'price5','price1', 'price2', 'price3', 'price4', 'price5'].map(field => (
-        <View key={field} style={styles.inputContainer}>
-          <Text style={styles.label}>{field.toUpperCase()}</Text>
+      {state.map((item, index) => (
+        <View key={index} style={styles.inputContainer}>
+          <Text style={styles.label}>{item.name}</Text>
           <TextInput
             style={styles.input}
-            placeholder="$0.00"
+            placeholder={item.name}
             keyboardType="numeric"
-            value={state[field]}
-            onChangeText={text => handleChange(field, text)}
+            value={item.price.toString()}  // Ensure it's a string
+            onChangeText={(text) => handleChange(index, 'price', text)}
           />
         </View>
       ))}
@@ -81,8 +79,8 @@ export default function SetPrice() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flexGrow: 1,
-    justifyContent: 'center',
+   
+   
   },
   title: {
     fontSize: 24,
@@ -97,6 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     fontWeight: '600',
+    textTransform: 'capitalize',
   },
   input: {
     borderWidth: 1,

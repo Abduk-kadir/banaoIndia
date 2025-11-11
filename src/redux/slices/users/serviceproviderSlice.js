@@ -36,7 +36,7 @@ export const createServiceProviderAction=createAsyncThunk('/serviceProvider/crea
      
         const {data}=await axios.post(`${baseURL}/api/createserviceprovider`,formData,config)
         console.log('data is:',data)
-        await AsyncStorage.setItem('serviceprovider',JSON.stringify(data.data))
+         await AsyncStorage.setItem('user',JSON.stringify(data.data))
         return data
        }
        catch(err){
