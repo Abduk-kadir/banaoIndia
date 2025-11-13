@@ -1,4 +1,3 @@
-// App.js  (React Native – plain JavaScript)
 import { useReducer } from 'react';
 import {
   Button,
@@ -11,8 +10,10 @@ import {
 import { useSelector } from 'react-redux';
 
 const initialState = [
-  { name: "ac service", price: "0" },  // Use string for TextInput
-  { name: "gas fill", price: "0" }
+  { category: "ac&home", name: "ac service", price: "0" },
+  { category: "ac&home", name: "gas fill", price: "0" },
+  { category: "inverter", name: "repair", price: "0" },
+  { category: "inverter", name: "heating", price: "0" }
 ];
 
 function formReducer(state, action) {
@@ -37,40 +38,49 @@ export default function SetPrice() {
   console.log('allworks*******:', works);
 
   const handleChange = (index, field, value) => {
-    dispatch({ type: 'UPDATE_FIELD', index, field, value });
+    // keep only numbers
+    const cleaned = value.replace(/[^0-9]/g, '');
+    dispatch({ type: 'UPDATE_FIELD', index, field, value: cleaned });
   };
 
   const handleSubmit = () => {
     console.log('Submitted Prices:', state);
-    // Add your submit logic here
   };
+
+  let prevCat = '';
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Set Your Own Price</Text>
+      <Text style={styles.mainTitle}>Set Your Own Price</Text>
 
-      {state.map((item, index) => (
-        <View key={index} style={styles.inputContainer}>
-          <Text style={styles.label}>{item.name}</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={item.name}
-            keyboardType="numeric"
-            value={item.price.toString()}  // Ensure it's a string
-            onChangeText={(text) => handleChange(index, 'price', text)}
-          />
-        </View>
-      ))}
+      {state.map((item, index) => {
+        const showCategory = item.category !== prevCat;
+        prevCat = item.category;
+
+        return (
+          <View key={index}>
+            {showCategory && (
+              <Text style={styles.categoryTitle}>
+                {item.category.toUpperCase()}
+              </Text>
+            )}
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{item.name}</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter price"
+                keyboardType="numeric"
+                value={item.price ? `₹${item.price}` : ''}
+                onChangeText={(text) => handleChange(index, 'price', text)}
+              />
+            </View>
+          </View>
+        );
+      })}
 
       <Button title="Submit" onPress={handleSubmit} color="#007AFF" />
-
-      <View style={styles.spacer} />
-
-      <Button
-        title="Reset"
-        onPress={() => dispatch({ type: 'RESET' })}
-        color="#FF3B30"
-      />
+   
     </ScrollView>
   );
 }
@@ -79,21 +89,29 @@ export default function SetPrice() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-   
-   
   },
-  title: {
+  mainTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+  },
+  categoryTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+     color: '#f56d82ff',
+    marginTop: 5,
+   
+    textTransform: 'capitalize',
   },
   inputContainer: {
-    marginBottom: 15,
+    marginBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   label: {
     fontSize: 16,
-    marginBottom: 5,
     fontWeight: '600',
     textTransform: 'capitalize',
   },
@@ -102,11 +120,11 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 8,
     fontSize: 16,
     backgroundColor: '#fff',
+    width: 100,
+    textAlign: 'center',
   },
-  spacer: {
-    height: 10,
-  },
+ 
 });
