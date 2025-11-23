@@ -21,7 +21,7 @@ export default function RootLayout() {
       try{
       let user=await AsyncStorage.getItem('user')
       let parsedUser=user?JSON.parse(user):null
-      console.log('user is:',parsedUser)
+     
       let role=parsedUser?parsedUser.role:''
       setRole(role)
       }

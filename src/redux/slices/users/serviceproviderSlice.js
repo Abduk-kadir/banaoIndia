@@ -97,7 +97,7 @@ export const getServiceProviderAction = createAsyncThunk(
         `${baseURL}/api/getproviderByserviceprovider`,
          {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:`Bearer ${token}`,
           },
         }
       );

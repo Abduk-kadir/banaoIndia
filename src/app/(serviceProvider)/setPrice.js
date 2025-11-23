@@ -9,12 +9,7 @@ import {
 } from 'react-native';
 import { useSelector } from 'react-redux';
 
-const initialState = [
-  { category: "ac&home", name: "ac service", price: "0" },
-  { category: "ac&home", name: "gas fill", price: "0" },
-  { category: "inverter", name: "repair", price: "0" },
-  { category: "inverter", name: "heating", price: "0" }
-];
+
 
 function formReducer(state, action) {
   switch (action.type) {
@@ -33,8 +28,9 @@ function formReducer(state, action) {
 }
 
 export default function SetPrice() {
-  const [state, dispatch] = useReducer(formReducer, initialState);
-  const works = useSelector((state) => state);
+ 
+  const works = useSelector((state) => state?.serviceProviders?.getServiceProvider?.data?.works);
+  const [state, dispatch] = useReducer(formReducer, works);
   console.log('allworks*******:', works);
 
   const handleChange = (index, field, value) => {
@@ -50,7 +46,7 @@ export default function SetPrice() {
   let prevCat = '';
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
       <Text style={styles.mainTitle}>Set Your Own Price</Text>
 
       {state.map((item, index) => {
@@ -97,23 +93,26 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   categoryTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
-     color: '#f56d82ff',
-    marginTop: 5,
+    color: '#f56d82ff',
+    marginBottom: 5,
    
     textTransform: 'capitalize',
   },
   inputContainer: {
     marginBottom: 5,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+   
+   
   },
   label: {
-    fontSize: 16,
+   fontSize: 16,
     fontWeight: '600',
     textTransform: 'capitalize',
+    flex: 1,                   
+           
+    
   },
   input: {
     borderWidth: 1,
