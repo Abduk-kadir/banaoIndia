@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseUrl";
@@ -27,7 +28,7 @@ export const getBookingAction = createAsyncThunk(
           },
         }
       );
-      console.log("service provider is:", data);
+     //console.log("all booking is:", data);
       return data;
     } catch (err) {
       console.log("error is:", err.response.data);

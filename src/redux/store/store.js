@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import bookingReducer from "../slices/booking/booking";
 import crasoulReducer from "../slices/crasoul/crasoulSlice";
 import emailReducer from "../slices/email/emailSlice";
 import reviewReducer from "../slices/review/review";
@@ -12,7 +13,8 @@ const store=configureStore({
         services:serviceReducer,
         crasouls:crasoulReducer,
         serviceProviders:serviceProviderReducer,
-        reviews:reviewReducer
+        reviews:reviewReducer,
+        bookings:bookingReducer
      
     }
 })

@@ -101,7 +101,7 @@ export const getServiceProviderAction = createAsyncThunk(
           },
         }
       );
-      console.log("service provider is:", data);
+      //console.log("service provider is:", data);
       return data;
     } catch (err) {
       console.log("error is:", err.response.data);
