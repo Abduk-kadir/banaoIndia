@@ -23,15 +23,12 @@ const Home = () => {
   const getStatusStyle = (status) => {
     switch ((status || '').toLowerCase()) {
       case 'confirmed':
-      case 'accepted':
         return { bg: '#e8f5e9', color: '#2e7d32' }
       case 'pending':
         return { bg: '#fff3e0', color: '#ef6c00' }
       case 'completed':
-      case 'done':
         return { bg: '#e3f2fd', color: '#1976d2' }
       case 'cancelled':
-      case 'rejected':
         return { bg: '#ffebee', color: '#c62828' }
       default:
         return { bg: '#f5f5f5', color: '#616161' }
@@ -93,11 +90,13 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex:1,
     padding: 16,
     paddingBottom: 40,
+    backgroundColor:"white"
   },
   card: {
-    backgroundColor: '#f7fdddff',
+    backgroundColor: '#eaece4ff',
     borderRadius: 16,
     padding: 5,
     marginBottom: 16,
@@ -153,15 +152,23 @@ const styles = StyleSheet.create({
     color: '#222',
     fontWeight: '500',
     textAlign: 'center',
+     paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 100,
+    backgroundColor:'#1f2937',
+    color:"#ffffff"
     
-    borderWidth:.5
   },
   price: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2e7d32',
     textAlign: 'right',
-    flex: 1,
+   
+     paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 100,
+    
     marginLeft: 10,
   },
   quotationBtn: {
