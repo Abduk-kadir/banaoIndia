@@ -35,7 +35,7 @@ const ServiceManBooking = () => {
    
     router.push({
     pathname: 'detailServicemanBooking',
-    params: { id:id,name:name,category:category }
+    params: { id:id,name:name,category:category ,servicetype:servicetype}
   });
  
    

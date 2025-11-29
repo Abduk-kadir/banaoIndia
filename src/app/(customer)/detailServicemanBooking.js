@@ -1,26 +1,47 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from '../../components/loader';
+import ToastMesaage from '../../components/toastmessage';
+import { createBookingAction } from "../../redux/slices/booking/booking";
 import { getreviewAction } from "../../redux/slices/review/review";
 
 const DetailServicemanBooking = () => {
   const dispatch = useDispatch();
-  const { id, name, category } = useLocalSearchParams();
+  const { id, name, category ,servicetype} = useLocalSearchParams();
   const nearestServiceProviders = useSelector((state) => state?.serviceProviders?.nearestServiceProvider?.providers);
   const item = nearestServiceProviders?.find(elem => elem._id === id);
-   const review = useSelector((state) => state?.reviews?.review?.data);
-
+  const review = useSelector((state) => state?.reviews?.review?.data);
+  const createbookingLoder=useSelector((state)=>state?.bookings?.cLoading);
+  const createbookingSuccess=useSelector((state)=>state?.bookings?.cBooking?.success)
+  console.log('success is***',createbookingSuccess)
+   
   useEffect(() => {
     if (id) {
       dispatch(getreviewAction({ id }));
     }
   }, [id, dispatch]);
+  useEffect(()=>{
+    if(createbookingSuccess){
+
+     ToastMesaage ('success', 'Booking is successfully done', 'please see in booking section');
+     router.replace('(customer)')
+    }
+     
+  },[createbookingSuccess])
 
   // Safe access
   const selectedWork = item?.works?.find((elem) => elem.name === name);
   const price = selectedWork?.price;
-
+  const payAfterService=()=>{
+      const now = new Date();
+      let js={price:price,work:name,category:category,serviceProvider:id,serviceType:servicetype,bookingDate:now}
+      console.log('js is:',js)
+      dispatch(createBookingAction(js))  
+      
+   }
+  
   return (
     <View style={styles.container}>
       {/* Booking Details */}
@@ -54,13 +75,14 @@ const DetailServicemanBooking = () => {
 
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, styles.beforeButton]}>
+        {createbookingLoder?<Loader/>:(<><TouchableOpacity style={[styles.button, styles.beforeButton]} onPress={payAfterService}>
           <Text style={styles.beforeButtonText}>Pay After Service</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, styles.afterButton]}>
           <Text style={styles.buttonText}>Pay Now</Text>
         </TouchableOpacity>
+        </>)}
       </View>
     </View>
   );
