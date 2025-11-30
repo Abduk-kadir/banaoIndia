@@ -26,7 +26,7 @@ const DetailServicemanBooking = () => {
     if(createbookingSuccess){
 
      ToastMesaage ('success', 'Booking is successfully done', 'please see in booking section');
-     router.replace('(customer)')
+     router.replace('(customer)/booking')
     }
      
   },[createbookingSuccess])
@@ -36,7 +36,7 @@ const DetailServicemanBooking = () => {
   const price = selectedWork?.price;
   const payAfterService=()=>{
       const now = new Date();
-      let js={price:price,work:name,category:category,serviceProvider:id,serviceType:servicetype,bookingDate:now}
+      let js={status:'confirmed',price:price,work:name,category:category,serviceProvider:id,serviceType:servicetype,bookingDate:now}
       console.log('js is:',js)
       dispatch(createBookingAction(js))  
       

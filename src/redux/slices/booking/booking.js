@@ -7,19 +7,21 @@ const initialState = {
   loading:false,
   error:null,
   allBooking:null,
-
   cLoading:false,
   cError:null,
-  cBooking:null
-  
+  cBooking:null,
+  //for fetching customer app booking
+  customerLoading:false,
+  customerError:null,
+  customerBooking:null,
  
 };
 
 export const createBookingAction = createAsyncThunk(
   "/booking/create",
-  async ({price,work,category,serviceProvider,serviceType,bookingDate}, { rejectWithValue, getState, dispatch }) => {
+  async ({status,price,work,category,serviceProvider,serviceType,bookingDate}, { rejectWithValue, getState, dispatch }) => {
     try {
-      let bookingData={price,work,category,serviceProvider,serviceType,bookingDate}
+      let bookingData={price,work,category,serviceProvider,serviceType,bookingDate,status}
       console.log('booking data:',bookingData)
       console.log("get booking  action is called");
       const userData = await AsyncStorage.getItem("user");
@@ -44,7 +46,6 @@ export const createBookingAction = createAsyncThunk(
     }
   }
 );
-
 
 export const getBookingAction = createAsyncThunk(
   "/booking/get",
@@ -72,6 +73,38 @@ export const getBookingAction = createAsyncThunk(
   }
 );
 
+
+export const getcustomerBookingAction = createAsyncThunk(
+  "/customerbooking/get",
+  async ({}, { rejectWithValue, getState, dispatch }) => {
+    try {
+      console.log("get customer booking  action is called");
+      const userData = await AsyncStorage.getItem("user");
+      const parsed = JSON.parse(userData);
+      const token = parsed?.token;
+      console.log('token is:',token)
+      const { data } = await axios.get(
+        `${baseURL}/api/bookingcustomer`,
+         {
+          headers: {
+            Authorization:`Bearer ${token}`,
+          },
+        }
+      );
+     //console.log("all booking is:", data);
+      return data;
+    } catch (err) {
+      console.log("error is:", err.response.data);
+      return rejectWithValue(err?.response?.data);
+    }
+  }
+);
+
+
+export const resetcreateBooking = createAsyncThunk("/createbooking/reset",async ({}, { rejectWithValue, getState, dispatch }) => {
+     return {}
+  }
+);
 
 
 
@@ -111,6 +144,30 @@ const bookingSlice = createSlice({
           state.cError = action.payload;
           state.cLoading = false;
         });
+
+
+
+         builder.addCase(getcustomerBookingAction.pending, (state, action) => {
+        
+         state.customerLoading=true
+        });
+        builder.addCase(getcustomerBookingAction.fulfilled, (state, action) => {
+          state.customerBooking=action.payload;
+          state.customerLoading = false;
+          state.customerError = null;
+        });
+        builder.addCase(getcustomerBookingAction.rejected, (state, action) => {
+          state.customerError = action.payload;
+          state.customerLoading = false;
+        });
+
+
+      builder.addCase(resetcreateBooking.pending, (state, action) => {
+      
+        state.cBooking=null
+     
+     });
+  
 
 
    
