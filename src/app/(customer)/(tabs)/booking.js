@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../../components/loader'
 import { getcustomerBookingAction, resetcreateBooking } from '../../../redux/slices/booking/booking'
@@ -50,37 +50,38 @@ const Booking= () => {
             {/* Header: Customer Name + Status */}
             <View style={styles.header}>
               <View>
+                 <Image source={{ uri: elem.serviceprovider[0]?.photo}} style={styles.image} />
                 <Text style={styles.customerName}>
                   {elem.serviceprovider[0]?.name || 'Unknown Customer'}
                 </Text>
                 <Text style={styles.email}>{elem.serviceprovider[0]?.email}</Text>
               </View>
-
+              <View>
               <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
                 <Text style={[styles.statusText, { color: statusStyle.color }]}>
                   {elem.status || 'Unknown'}
                 </Text>
+                
+              </View>
+               <Text style={styles.value}>{elem.category || '-'}</Text>
+                <Text style={styles.value}>{elem.work || '-'}</Text>
+                 <Text style={styles.price}>₹ {elem.price}</Text>
               </View>
             </View>
 
             {/* Consistent Rows */}
-            <View style={styles.row}>
-              <Text style={styles.label}>Equipment</Text>
-              <Text style={styles.value}>{elem.category || '-'}</Text>
-            </View>
+           
 
-            <View style={styles.row}>
-              <Text style={styles.label}>Booked Work</Text>
-              <Text style={styles.value}>{elem.work || '-'}</Text>
-            </View>
+            
 
-            <View style={styles.row}>
-              <Text style={styles.label}>Price</Text>
-              <Text style={styles.price}>Rs {elem.price || 0}</Text>
-            </View>
+           <View style={styles.buttonRow}>
            <TouchableOpacity style={styles.cancelBtn}>
           <Text style={styles.cancelBtnText}>Cancel</Text>
           </TouchableOpacity>
+           <TouchableOpacity style={styles.payBtn}>
+          <Text style={styles.cancelBtnText}>Pay</Text>
+          </TouchableOpacity>
+          </View>
           </View>
         )
       })}
@@ -93,6 +94,19 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
     backgroundColor:"white"
+  },
+  image: {
+    width:70,
+    height: 70,
+    resizeMode:"cover",
+    borderRadius: 10,
+    marginBottom: 1,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 12,
+    marginTop: 12,
   },
   card: {
     backgroundColor: '#eaece4ff',
@@ -111,7 +125,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+   
   },
   customerName: {
     fontSize: 18,
@@ -124,9 +138,11 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   statusBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingHorizontal:5,
+    paddingVertical: 5,
     borderRadius: 20,
+    alignSelf: 'flex-end',         // keeps it aligned right
+    marginBottom: 10,
   },
   statusText: {
     fontSize: 12,
@@ -134,56 +150,48 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.8,
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 3,
-  },
-  label: {
-    fontSize: 15,
-    color: '#555',
-    fontWeight: '600',
-    
-  },
+
+  // Only these three lines changed — category & work now look premium
   value: {
-    fontSize: 16,
-    color: '#222',
-    fontWeight: '500',
-    textAlign: 'center',
+    fontSize: 15.5,
+    color: '#1f2937',
+    backgroundColor: '#f1f5f9',
+    alignSelf: 'flex-end',
     paddingHorizontal: 14,
-    paddingVertical: 2,
-    borderRadius: 5,
-    backgroundColor:'#1f2937',
-    color:"#ffffff"
-    
+    paddingVertical: 6,
+    borderRadius: 12,
+    fontWeight: '600',
+    marginBottom: 6,
   },
   price: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: 'bold',
     color: '#2e7d32',
-    textAlign: 'right',
-   
-     paddingHorizontal: 14,
-    paddingVertical: 7,
+    backgroundColor: '#ecfdf5',
+    alignSelf: 'flex-end',
+    paddingHorizontal: 18,
+    paddingVertical: 9,
     borderRadius: 100,
-    
-    marginLeft: 10,
   },
+
   cancelBtn: {
-  alignSelf: 'flex-end',
-  marginTop: 6,
-  backgroundColor: '#d23131ff',
-  paddingVertical: 8,
-  paddingHorizontal: 14,
-  borderRadius: 8,
-},
-
-cancelBtnText: {
-  color: 'white',
-  fontSize: 14,
-  fontWeight: '500',
-},
+  
+    backgroundColor: '#c55b5bff',
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 10,
+  },
+  payBtn: {
+   
+    backgroundColor: '#55ab72ff',
+    paddingVertical: 10,
+    paddingHorizontal: 34,
+    borderRadius: 10,
+  },
+  cancelBtnText: {
+    color: 'white',
+    fontSize: 14.5,
+    fontWeight: '600',
+  },
 })
-
 export default Booking
