@@ -11,8 +11,10 @@ const DetailServicemanBooking = () => {
   const dispatch = useDispatch();
   const { id, name, category ,servicetype} = useLocalSearchParams();
   const nearestServiceProviders = useSelector((state) => state?.serviceProviders?.nearestServiceProvider?.providers);
+ 
   const item = nearestServiceProviders?.find(elem => elem._id === id);
   const review = useSelector((state) => state?.reviews?.review?.data);
+  console.log('review is:',review)
   const createbookingLoder=useSelector((state)=>state?.bookings?.cLoading);
   const createbookingSuccess=useSelector((state)=>state?.bookings?.cBooking?.success)
   console.log('success is***',createbookingSuccess)
@@ -37,7 +39,7 @@ const DetailServicemanBooking = () => {
   const payAfterService=()=>{
       const now = new Date();
       let js={status:'confirmed',price:price,work:name,category:category,serviceProvider:id,serviceType:servicetype,bookingDate:now}
-      console.log('js is:',js)
+     
       dispatch(createBookingAction(js))  
       
    }

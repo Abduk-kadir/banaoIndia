@@ -6,6 +6,7 @@ import reviewReducer from "../slices/review/review";
 import serviceReducer from "../slices/service/serviceSlice";
 import serviceProviderReducer from "../slices/users/serviceproviderSlice";
 import userReducer from '../slices/users/userSlice';
+
 const store=configureStore({
     reducer:{
         users:userReducer,

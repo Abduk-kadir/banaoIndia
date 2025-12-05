@@ -10,9 +10,11 @@ const initialState={
 
 export const getreviewAction=createAsyncThunk('/review/all',async({id},{rejectWithValue,getState,dispatch})=>{
        try{
+      
          console.log('getting review')
+         
          const {data}=await axios.get(`${baseURL}/api/review/${id}`)
-         console.log('review:',data)
+        
          return data
        }
        catch(err){
@@ -33,7 +35,7 @@ const reviewSlice=createSlice({
             state.loading=true;
         });
         builder.addCase(getreviewAction.fulfilled,(state,action)=>{
-            state.serviceProvider=action.payload
+            state.review=action.payload
             state.loading=false;
             state.error=null
           
