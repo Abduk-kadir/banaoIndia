@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -7,13 +8,15 @@ import ToastMesaage from '../../components/toastmessage';
 import { createBookingAction } from "../../redux/slices/booking/booking";
 import { getreviewAction } from "../../redux/slices/review/review";
 
+
 const DetailServicemanBooking = () => {
   const dispatch = useDispatch();
   const { id, name, category ,servicetype} = useLocalSearchParams();
   const nearestServiceProviders = useSelector((state) => state?.serviceProviders?.nearestServiceProvider?.providers);
  
   const item = nearestServiceProviders?.find(elem => elem._id === id);
-  const review = useSelector((state) => state?.reviews?.review?.data);
+  let review = useSelector((state) => state?.reviews?.review?.data);
+  review=review?review:[]
   console.log('review is:',review)
   const createbookingLoder=useSelector((state)=>state?.bookings?.cLoading);
   const createbookingSuccess=useSelector((state)=>state?.bookings?.cBooking?.success)
@@ -73,6 +76,32 @@ const DetailServicemanBooking = () => {
           {/* Price */}
           <Text style={styles.price}>₹{price || 'N/A'}</Text>
         </View>
+        
+          {review.map((elem, index) => (
+  <View key={index} style={styles.reviewItem}>
+    
+    {/* Review message */}
+    <View style={{flexDirection:'row'}}> 
+    <Text>{elem.rating}</Text>
+   <Feather name="star" size={16} color="#f5c518" style={styles.star} />
+   </View> 
+  
+    <Text style={styles.reviewMessage}>{elem.message}</Text>
+    {/* Horizontal row of images */}
+    <View style={styles.imagesRow}>
+      {elem.photos?.map((photo, photoIndex) => (
+        <Image
+          key={photoIndex}
+          source={{ uri: photo }}
+          style={styles.reviewImage}
+        />
+      ))}
+    </View>
+
+  </View>
+))}
+        
+        
       </ScrollView>
 
       {/* Bottom Buttons */}
@@ -86,6 +115,8 @@ const DetailServicemanBooking = () => {
         </TouchableOpacity>
         </>)}
       </View>
+     
+
     </View>
   );
 };
@@ -101,7 +132,27 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop:10
   },
-
+ reviewItem: {
+  marginBottom: 20,
+  paddingHorizontal: 16,
+},
+imagesRow: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',        // Allows wrapping if too many images
+  gap: 8,                  // Space between images (modern RN supports gap!)
+  marginBottom: 8,
+},
+reviewImage: {
+  width: 80,
+  height: 80,
+  borderRadius: 12,
+  resizeMode: 'cover',
+},
+reviewMessage: {
+  fontSize: 14,
+  color: '#444',
+  lineHeight: 30,
+},
   // Image
   imageWrapper: {
     width: '100%',
