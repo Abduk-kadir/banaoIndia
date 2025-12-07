@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -80,11 +80,13 @@ const DetailServicemanBooking = () => {
           {review.map((elem, index) => (
   <View key={index} style={styles.reviewItem}>
     
-    {/* Review message */}
-    <View style={{flexDirection:'row'}}> 
-    <Text>{elem.rating}</Text>
-   <Feather name="star" size={16} color="#f5c518" style={styles.star} />
-   </View> 
+{elem.rating&&<View style={styles.ratingBadgeContainer}>
+  <View style={styles.ratingBadge}>
+   
+    <Text style={styles.ratingText}>{elem.rating}</Text>
+     <AntDesign name="star" size={15} color="rgba(249, 244, 216, 1)" />
+  </View>
+</View>}
   
     <Text style={styles.reviewMessage}>{elem.message}</Text>
     {/* Horizontal row of images */}
@@ -142,6 +144,35 @@ imagesRow: {
   gap: 8,                  // Space between images (modern RN supports gap!)
   marginBottom: 8,
 },
+// Rating Badge Styles (add inside your styles object)
+ratingBadgeContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 2,
+  alignSelf: 'flex-start', // makes badge hug content
+},
+ratingBadge: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#1bbb33',        // Your green
+  paddingHorizontal: 12,
+  paddingVertical: 4,
+  borderRadius: 10,
+  gap: 3,
+  // Optional premium shadow (remove if you don't want)
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 5,
+},
+
+ratingText: {
+  color: '#FFFFFF',
+  fontSize: 20,
+  fontWeight: '800',
+  
+},
 reviewImage: {
   width: 80,
   height: 80,
@@ -149,9 +180,10 @@ reviewImage: {
   resizeMode: 'cover',
 },
 reviewMessage: {
-  fontSize: 14,
+  fontSize: 18,
   color: '#444',
   lineHeight: 30,
+  fontWeight:300
 },
   // Image
   imageWrapper: {
