@@ -118,9 +118,14 @@ const Booking = () => {
                 <Text style={styles.cancelBtnText}>Pay</Text>
               </TouchableOpacity>
               </>):
+              <>
+               <TouchableOpacity style={styles.reviewBtn}>
+                <Text style={styles.reviewBtnText}>Review</Text>
+              </TouchableOpacity>
                <TouchableOpacity style={styles.complainBtn}>
                 <Text style={styles.cancelBtnText}>Complain</Text>
               </TouchableOpacity>
+              </>
 
               }
             </View>
@@ -152,7 +157,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     gap: 12,
     marginTop: 12,
   },
@@ -222,13 +227,13 @@ const styles = StyleSheet.create({
   cancelBtn: {
     backgroundColor: "#c55b5bff",
     paddingVertical: 10,
-    paddingHorizontal: 18,
+    paddingHorizontal: 40,
     borderRadius: 10,
   },
   payBtn: {
     backgroundColor: "#55ab72ff",
     paddingVertical: 10,
-    paddingHorizontal: 34,
+    paddingHorizontal: 40,
     borderRadius: 10,
   },
   cancelBtnText: {
@@ -241,6 +246,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 30,
     borderRadius: 10,
+  },
+  reviewBtn: {
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 11,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+      // orange border to make it pop
+  },
+  reviewBtnText: {
+    color: "#271203ff",           // orange text
+    fontSize: 15,
+    fontWeight: "600",
   },
 });
 export default Booking;

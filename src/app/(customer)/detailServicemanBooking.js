@@ -84,11 +84,19 @@ const DetailServicemanBooking = () => {
   <View style={styles.ratingBadge}>
    
     <Text style={styles.ratingText}>{elem.rating}</Text>
-     <AntDesign name="star" size={15} color="rgba(249, 244, 216, 1)" />
+     <AntDesign name="star" size={10} color="rgba(249, 244, 216, 1)" />
   </View>
 </View>}
-  
+    <View style={{flexDirection:'row',justifyContent:"space-between",alignItems:"center"}}>
     <Text style={styles.reviewMessage}>{elem.message}</Text>
+   <Text style={styles.reviewDate}>
+  {new Date(elem.createdAt).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  })}
+</Text>
+    </View>
     {/* Horizontal row of images */}
     <View style={styles.imagesRow}>
       {elem.photos?.map((photo, photoIndex) => (
@@ -99,7 +107,7 @@ const DetailServicemanBooking = () => {
         />
       ))}
     </View>
-
+    <Text style={styles.customer}>{elem.customer[0]?.name}</Text>
   </View>
 ))}
         
@@ -130,6 +138,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  customer:{
+    fontSize:15,
+    fontWeight:600
+
+  },
+  reviewDate: {
+  fontSize: 12,
+  color: '#666',
+  marginLeft: 10,
+},
   content: {
     flex: 1,
     marginTop:10
@@ -169,7 +187,7 @@ ratingBadge: {
 
 ratingText: {
   color: '#FFFFFF',
-  fontSize: 20,
+  fontSize: 16,
   fontWeight: '800',
   
 },
@@ -180,7 +198,7 @@ reviewImage: {
   resizeMode: 'cover',
 },
 reviewMessage: {
-  fontSize: 18,
+  fontSize: 15,
   color: '#444',
   lineHeight: 30,
   fontWeight:300
