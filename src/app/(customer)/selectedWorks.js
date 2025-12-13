@@ -10,7 +10,7 @@ const SelectedWorks = () => {
    allService=allService?allService?.data:[]
    const { category, servicetype,id } = useLocalSearchParams();
    let selectedservice=allService.find(elem=>elem.servicetype==servicetype)
-   let selectedworks=selectedservice.works.filter(elem=>elem.category==category)
+   let selectedworks=selectedservice?.works.filter(elem=>elem.category==category)
   // console.log('selected works',selectedworks)
   // console.log('id:',id)
  

@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react'; // Don't forget this!
+import { useCallback, useState } from 'react'; // Don't forget this!
 import {
   Image,
   ScrollView,
@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../components/loader";
+import MakeReviewModal from '../../../components/makeReviewModal';
 import {
   getcustomerBookingAction,
   resetcreateBooking,
 } from "../../../redux/slices/booking/booking";
+
 
 const Booking = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,20 @@ const Booking = () => {
   let bookings = useSelector((state) => state?.bookings?.customerBooking?.data);
   bookings = bookings ? bookings : [];
   const isLoading = loading;
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+
+  const openReviewModal = (serviceData) => {
+    setSelectedService(serviceData);
+    setIsModalVisible(true);
+  };
+
+  
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setSelectedService(null);
+  };
 
  useFocusEffect(
   useCallback(() => {
@@ -50,6 +66,7 @@ const Booking = () => {
   if (isLoading) return <Loader />;
 
   return (
+    <>
     <ScrollView
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
@@ -119,7 +136,7 @@ const Booking = () => {
               </TouchableOpacity>
               </>):
               <>
-               <TouchableOpacity style={styles.reviewBtn}>
+               <TouchableOpacity style={styles.reviewBtn} onPress={() => openReviewModal(elem)}>
                 <Text style={styles.reviewBtnText}>Review</Text>
               </TouchableOpacity>
                <TouchableOpacity style={styles.complainBtn}>
@@ -133,6 +150,12 @@ const Booking = () => {
         );
       })}
     </ScrollView>
+    <MakeReviewModal
+        isModalVisible={isModalVisible}
+        toggleModal={closeModal}
+        data={selectedService} // 传入当前点击的 booking
+      />
+    </>
   );
 };
 
