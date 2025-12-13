@@ -1,3 +1,3 @@
-const baseURL ="http://10.196.35.206:3000";
+const baseURL ="http://172.28.52.206:3000";
 
 export default baseURL;

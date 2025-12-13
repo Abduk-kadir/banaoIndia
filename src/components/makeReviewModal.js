@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
@@ -13,13 +12,19 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { useDispatch, useSelector } from 'react-redux';
+import { createReviewAction, resetcreateReview } from '../redux/slices/review/review';
+import Loader from './loader';
+import ToastMessage from './toastmessage';
+
 
 const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
+  const dispatch=useDispatch()
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState('');
   const [photo, setPhoto] = useState(null);
-
-  // Pick image from gallery
+ const loader=useSelector((state)=>state?.reviews?.cLoading);
+ const success=useSelector((state)=>state?.reviews?.cReview?.success)
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -28,7 +33,7 @@ const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.mediaTypes,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.8,
@@ -51,24 +56,13 @@ const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
     }
 
     // Here you would send the review to your backend
-    console.log('Review Submitted:', { rating, message, photo, user: data.customer,serviceProvider:data.serviceProvider});
+   
+    let reviewData={ rating, message, photo, user: data?.customer,serviceProvider:data?.serviceProvider};
+    console.log('reviewdata:',reviewData)
+    dispatch(createReviewAction(reviewData))
+  
 
-    Alert.alert('Success', 'Thank you for your review!', [
-      {
-        text: 'OK',
-        onPress: () => {
-          toggleModal();
-          router.push({
-            pathname: '/(customer)/selectedWorks',
-            params: {
-              category: data.category,
-              servicetype: data.servicetype,
-              id: data._id,
-            },
-          });
-        },
-      },
-    ]);
+   
   };
 
   // Star component
@@ -89,7 +83,20 @@ const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
     );
   };
 
+  useEffect(() => {
+  if (success) {
+    ToastMessage('success', 'Review submitted successfully');
+    toggleModal();
+    dispatch(resetcreateReview({}))
+  
+  }
+
+ 
+}, [success]);
+
   return (
+    <>
+    {Loader&&<Loader/>}
     <Modal
       isVisible={isModalVisible}
       onBackdropPress={toggleModal}
@@ -163,6 +170,7 @@ const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
         </ScrollView>
       </View>
     </Modal>
+    </>
   );
 };
 

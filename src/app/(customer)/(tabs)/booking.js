@@ -150,11 +150,11 @@ const Booking = () => {
         );
       })}
     </ScrollView>
-    <MakeReviewModal
+    {isModalVisible&&<MakeReviewModal
         isModalVisible={isModalVisible}
         toggleModal={closeModal}
         data={selectedService} // 传入当前点击的 booking
-      />
+      />}
     </>
   );
 };
