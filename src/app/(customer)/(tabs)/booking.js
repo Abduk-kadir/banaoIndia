@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Complain from '../../../components/complain';
 import Loader from "../../../components/loader";
 import MakeReviewModal from '../../../components/makeReviewModal';
 import {
@@ -27,9 +28,16 @@ const Booking = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
 
+  const [isComModalVisible, setComIsModalVisible] = useState(false);
+  const [comselectedService, setComSelectedService] = useState(null);
+
   const openReviewModal = (serviceData) => {
     setSelectedService(serviceData);
     setIsModalVisible(true);
+  };
+ const openComplainModal = (serviceData) => {
+   setComSelectedService(serviceData);
+    setComIsModalVisible(true);
   };
 
   
@@ -37,6 +45,12 @@ const Booking = () => {
     setIsModalVisible(false);
     setSelectedService(null);
   };
+
+ const closeComplianModal = () => {
+    setComIsModalVisible(false);
+    setComSelectedService(null);
+  };
+
 
  useFocusEffect(
   useCallback(() => {
@@ -139,7 +153,7 @@ const Booking = () => {
                <TouchableOpacity style={styles.reviewBtn} onPress={() => openReviewModal(elem)}>
                 <Text style={styles.reviewBtnText}>Review</Text>
               </TouchableOpacity>
-               <TouchableOpacity style={styles.complainBtn}>
+               <TouchableOpacity style={styles.complainBtn}  onPress={() => openComplainModal(elem)}>
                 <Text style={styles.cancelBtnText}>Complain</Text>
               </TouchableOpacity>
               </>
@@ -154,6 +168,11 @@ const Booking = () => {
         isModalVisible={isModalVisible}
         toggleModal={closeModal}
         data={selectedService} // 传入当前点击的 booking
+      />}
+      {isComModalVisible&&<Complain
+        isModalVisible={isComModalVisible}
+        toggleModal={closeComplianModal}
+        data={comselectedService} // 传入当前点击的 booking
       />}
     </>
   );
