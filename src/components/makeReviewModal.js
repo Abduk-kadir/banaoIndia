@@ -96,7 +96,6 @@ const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
 
   return (
     <>
-    {Loader&&<Loader/>}
     <Modal
       isVisible={isModalVisible}
       onBackdropPress={toggleModal}
@@ -156,10 +155,11 @@ const MakeReviewModal = ({ isModalVisible, toggleModal, data }) => {
             )}
           </View>
 
-          {/* Submit Button */}
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          {
+          loader?<Loader/>:<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitText}>Submit Review</Text>
           </TouchableOpacity>
+          }
 
           <TouchableOpacity
             style={styles.cancelButton}

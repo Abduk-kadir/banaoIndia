@@ -11,11 +11,10 @@ const initialState = {
   cLoading: false,
 };
 
-
-export const createComplainAction = createAsyncThunk(
+export const createComplaintAction = createAsyncThunk(
   "/complain/create",
   async (
-    { booking,complaintText, photo},
+    { booking, photo,complainText},
     { rejectWithValue, getState, dispatch }
   ) => {
     try {
@@ -23,26 +22,27 @@ export const createComplainAction = createAsyncThunk(
 
       const formData = new FormData();
       console.log('booking,',booking),
-      console.log('complaint:',complaintText)
+      console.log('complaint:',complainText)
       console.log('photo',photo)
       formData.append("booking", booking);
-      formData.append("complaintText", complaintText);
+      formData.append("complainText", complainText);
+    
       if (photo) {
         formData.append("photo", {
           uri: photo,
           type: "image/jpeg", // you can detect mime if needed
-          name: photo.split("/").pop(), // extract filename from path
+          name: photo.split('/').pop(), // extract filename from path
         });
       }
-
+    
       const userData = await AsyncStorage.getItem("user");
       const parsed = JSON.parse(userData);
       const token = parsed?.token;
-      console.log("token is:", token);
+     
       const { data } = await axios.post(`${baseURL}/api/createComplaint`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       console.log('data is:',data)
@@ -54,22 +54,20 @@ export const createComplainAction = createAsyncThunk(
   }
 );
 
-
-
 const complaintSlice = createSlice({
   name: "review",
   initialState,
   extraReducers: (builder) => {
    
-    builder.addCase(createReviewAction.pending, (state, action) => {
+    builder.addCase(createComplaintAction.pending, (state, action) => {
       state.cLoading = true;
     });
-    builder.addCase(createReviewAction.fulfilled, (state, action) => {
+    builder.addCase(createComplaintAction.fulfilled, (state, action) => {
       state.cComplaint = action.payload;
       state.cLoading = false;
       state.cError = null;
     });
-    builder.addCase(createReviewAction.rejected, (state, action) => {
+    builder.addCase(createComplaintAction.rejected, (state, action) => {
       state.cError = action.payload;
       state.cLoading = false;
     });

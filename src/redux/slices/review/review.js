@@ -62,7 +62,7 @@ export const createReviewAction = createAsyncThunk(
       const { data } = await axios.post(`${baseURL}/api/createReview`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
       });
       console.log('data is:',data)

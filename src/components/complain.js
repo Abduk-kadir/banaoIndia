@@ -1,24 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-    Alert,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { useDispatch } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { createComplaintAction } from '../redux/slices/complaint/complaint';
 import Loader from './loader';
+import ToastMessage from './toastmessage';
 
 
 const Complain = ({ isModalVisible, toggleModal, data }) => {
   const dispatch=useDispatch()
+ const loader=useSelector((state)=>state?.complaints?.cLoading);
+ const success=useSelector((state)=>state?.complaints?.cComplaint?.success)
  
   const [message, setMessage] = useState('');
   const [photo, setPhoto] = useState(null);
@@ -45,38 +48,34 @@ const Complain = ({ isModalVisible, toggleModal, data }) => {
 
   // Handle submit
   const handleSubmit = () => {
-  
+    console.log('complain data:',data)
     if (!message.trim()) {
-      Alert.alert('Error', 'Please write a review message');
+      Alert.alert('Error', 'Please write your complain');
       return;
     }
 
     // Here you would send the review to your backend
    
-    let reviewData={ rating, message, photo, user: data?.customer,serviceProvider:data?.serviceProvider};
-    console.log('reviewdata:',reviewData)
+     let complaintData={booking:data?._id, photo, complainText:message};
+     dispatch(createComplaintAction(complaintData))
   
-  
-
    
   };
 
- 
 
- /* useEffect(() => {
-  /*if (success) {
-   // ToastMessage('success', 'Review submitted successfully');
-   // toggleModal();
-    //dispatch(resetcreateReview({}))
+  useEffect(() => {
+  if (success) {
+   ToastMessage('success', 'complain create successfully');
+   toggleModal();
   
   }
 
  
-}, [success]);*/
+}, [success]);
 
   return (
     <>
-    {Loader&&<Loader/>}
+   
     <Modal
       isVisible={isModalVisible}
       onBackdropPress={toggleModal}
@@ -129,10 +128,11 @@ const Complain = ({ isModalVisible, toggleModal, data }) => {
             )}
           </View>
 
-          {/* Submit Button */}
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          {
+          loader?<Loader/>:<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitText}>Submit Complain </Text>
           </TouchableOpacity>
+          }
 
           <TouchableOpacity
             style={styles.cancelButton}
