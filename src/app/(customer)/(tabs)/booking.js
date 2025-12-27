@@ -61,7 +61,7 @@ const Booking = () => {
    
   };
 const closeShowCompliant = () => {
-    setShowCompaintVisible(true)
+    setShowCompaintVisible(false)
     setShowselectedComplain(null)
   };
   
@@ -198,7 +198,7 @@ const closeShowCompliant = () => {
       {isShowCompaintVisible&&<ShowComplain
         isModalVisible={isShowCompaintVisible}
         toggleModal={closeShowCompliant}
-        data={showselectedComplain} // 传入当前点击的 booking
+        data={{...showselectedComplain,text:"Cancel"}} // 传入当前点击的 booking
       />}
     </>
   );

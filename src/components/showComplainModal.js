@@ -1,15 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
 import {
   Alert,
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,29 +20,13 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
   const dispatch=useDispatch()
  const loader=useSelector((state)=>state?.complaints?.cLoading);
  const success=useSelector((state)=>state?.complaints?.cComplaint?.success)
+ let {text}=data
  
   const [message, setMessage] = useState('');
   const [photo, setPhoto] = useState(null);
 // const loader=useSelector((state)=>state?.reviews?.cLoading);
 // const success=useSelector((state)=>state?.reviews?.cReview?.success)
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'We need permission to access your photos.');
-      return;
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.mediaTypes,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      setPhoto(result.assets[0].uri);
-    }
-  };
+  
 
   // Handle submit
   const handleSubmit = () => {
@@ -72,6 +54,11 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
 
  
 }, [success]);
+const renderPhoto = ({ item }) => (
+    <View style={styles.photoPreview}>
+      <Image source={{ uri: item }} style={styles.previewImage} resizeMode="cover" />
+    </View>
+  );
 
   return (
     <>
@@ -86,51 +73,37 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
     >
       <View style={styles.modalContainer}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.title}>Leave a Complain</Text>
-          <Text style={styles.subtitle}>for {data?.servicetype || 'Service'}</Text>
+          <Text style={styles.title}>Complain</Text>
+         
 
          
 
           {/* Review Message */}
           <View style={styles.inputSection}>
-            <Text style={styles.label}>Your  Complain</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Write your complain..."
-              multiline
-              numberOfLines={5}
-              value={message}
-              onChangeText={setMessage}
-              textAlignVertical="top"
-            />
-          </View>
+              <Text style={styles.label}>Message</Text>
+              <Text style={styles.complainText}>{data?.complainText || 'No message provided'}</Text>
+            </View>
 
           {/* Photo Upload */}
           <View style={styles.photoSection}>
-            <Text style={styles.label}>Add Photo (Optional)</Text>
-            <TouchableOpacity style={styles.uploadButton} onPress={pickImage}>
-              <Ionicons name="camera-outline" size={24} color="#007AFF" />
-              <Text style={styles.uploadText}>
-                {photo ? 'Change Photo' : 'Upload Photo'}
-              </Text>
-            </TouchableOpacity>
-
-            {photo && (
-              <View style={styles.photoPreview}>
-                <Image source={{ uri: photo }} style={styles.previewImage} />
-                <TouchableOpacity
-                  style={styles.removePhoto}
-                  onPress={() => setPhoto(null)}
-                >
-                  <Ionicons name="close-circle" size={28} color="red" />
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+              <Text style={styles.label}>Attached Photos:</Text>
+              {data?.photos && data.photos.length > 0 ? (
+                <FlatList
+                  data={data.photos}
+                  renderItem={renderPhoto}
+                  keyExtractor={(item, index) => index.toString()}
+                  horizontal // Optional: horizontal scroll for multiple images
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ paddingVertical: 10 }}
+                />
+              ) : (
+                <Text style={styles.noPhotoText}>No photos attached</Text>
+              )}
+            </View>
 
           {
           loader?<Loader/>:<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitText}>Submit Complain </Text>
+            <Text style={styles.submitText}>{text}</Text>
           </TouchableOpacity>
           }
 
@@ -165,78 +138,49 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 5,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  ratingSection: {
-    alignItems: 'center',
-    marginVertical: 10,
-  },
   label: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: 8,
+    color: '#444',
   },
-  starContainer: {
-    flexDirection: 'row',
+  inputSection: {
     marginVertical: 10,
   },
-  star: {
-    marginHorizontal: 5,
-  },
- 
-  inputSection: {
-    marginVertical: 15,
-  },
-  textInput: {
+  complainText: {
+    fontSize: 16,
+    color: '#333',
+    backgroundColor: '#f9f9f9',
+    padding: 15,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 12,
-    padding: 15,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
-    minHeight: 120,
   },
-  photoSection: {
+  
+ 
+  
+ photoSection: {
     marginVertical: 15,
   },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f0f8ff',
-    padding: 15,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#007AFF',
-    borderStyle: 'dashed',
-  },
-  uploadText: {
-    color: '#007AFF',
-    fontSize: 16,
-    marginLeft: 10,
-    fontWeight: '600',
-  },
   photoPreview: {
+    marginRight: 10,
     position: 'relative',
-    marginTop: 15,
-    alignSelf: 'center',
   },
   previewImage: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
-  removePhoto: {
-    position: 'absolute',
-    top: -10,
-    right: -10,
-    backgroundColor: 'white',
-    borderRadius: 20,
+ noPhotoText: {
+    fontSize: 15,
+    color: '#888',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: 20,
   },
+  
   submitButton: {
     backgroundColor: '#f26e62ff',
     padding: 16,
