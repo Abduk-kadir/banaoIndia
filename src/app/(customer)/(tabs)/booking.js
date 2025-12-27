@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Complain from '../../../components/complain';
 import Loader from "../../../components/loader";
 import MakeReviewModal from '../../../components/makeReviewModal';
+import ShowComplain from '../../../components/showComplainModal';
 import {
   getcustomerBookingAction,
   resetcreateBooking,
@@ -30,6 +31,9 @@ const Booking = () => {
 
   const [isComModalVisible, setComIsModalVisible] = useState(false);
   const [comselectedService, setComSelectedService] = useState(null);
+
+  const [isShowCompaintVisible, setShowCompaintVisible] = useState(false);
+  const [showselectedComplain, setShowselectedComplain] = useState(null);
 
   const openReviewModal = (serviceData) => {
     setSelectedService(serviceData);
@@ -51,6 +55,22 @@ const Booking = () => {
     setComSelectedService(null);
   };
 
+ const openShowCompliant = (complain) => {
+    setShowselectedComplain(complain)
+    setShowCompaintVisible(true)
+   
+  };
+const closeShowCompliant = () => {
+    setShowCompaintVisible(true)
+    setShowselectedComplain(null)
+  };
+  
+
+  const handleStatus=(status,complain)=>{
+    // console.log('staus is:',status)
+     openShowCompliant(complain)
+  }
+
 
  useFocusEffect(
   useCallback(() => {
@@ -63,17 +83,17 @@ const Booking = () => {
 );
 
   const getStatusStyle = (status) => {
+    
     switch ((status || "").toLowerCase()) {
       case "confirmed":
         return { bg: "#e8f5e9", color: "#2e7d32" };
-      case "pending":
+      case "complained":
         return { bg: "#fff3e0", color: "#ef6c00" };
       case "completed":
         return { bg: "#e3f2fd", color: "#1976d2" };
       case "cancelled":
         return { bg: "#ffebee", color: "#c62828" };
-      default:
-        return { bg: "#f5f5f5", color: "#616161" };
+      
     }
   };
 
@@ -124,11 +144,11 @@ const Booking = () => {
                       { backgroundColor: statusStyle.bg },
                     ]}
                   >
-                    <Text
-                      style={[styles.statusText, { color: statusStyle.color }]}
-                    >
+                    <TouchableOpacity>
+                    <Text style={[styles.statusText, { color: statusStyle.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0])} >
                       {elem.status || "Unknown"}
                     </Text>
+                    </TouchableOpacity>
                   </View>
                   <Text style={styles.value}>{elem.category || "-"}</Text>
                   <Text style={styles.value}>{elem.work || "-"}</Text>
@@ -140,7 +160,7 @@ const Booking = () => {
             {/* Consistent Rows */}
 
             <View style={styles.buttonRow}>
-             {elem.paymentStatus=='unpaid'?( 
+             {elem.status=='confirmed'?( 
               <>
               <TouchableOpacity style={styles.cancelBtn}>
                 <Text style={styles.cancelBtnText}>Cancel</Text>
@@ -148,15 +168,15 @@ const Booking = () => {
               <TouchableOpacity style={styles.payBtn}>
                 <Text style={styles.cancelBtnText}>Pay</Text>
               </TouchableOpacity>
-              </>):
-              <>
+              </>):(elem.status!='cancelled'&&elem.status!='complained'? <>
                <TouchableOpacity style={styles.reviewBtn} onPress={() => openReviewModal(elem)}>
                 <Text style={styles.reviewBtnText}>Review</Text>
               </TouchableOpacity>
                <TouchableOpacity style={styles.complainBtn}  onPress={() => openComplainModal(elem)}>
                 <Text style={styles.cancelBtnText}>Complain</Text>
               </TouchableOpacity>
-              </>
+              </>:"")
+             
 
               }
             </View>
@@ -173,6 +193,12 @@ const Booking = () => {
         isModalVisible={isComModalVisible}
         toggleModal={closeComplianModal}
         data={comselectedService} // 传入当前点击的 booking
+      />}
+
+      {isShowCompaintVisible&&<ShowComplain
+        isModalVisible={isShowCompaintVisible}
+        toggleModal={closeShowCompliant}
+        data={showselectedComplain} // 传入当前点击的 booking
       />}
     </>
   );

@@ -1,17 +1,39 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/loader'
+import ShowComplain from '../../components/showComplainModal'
 import { getBookingAction } from '../../redux/slices/booking/booking'
 import { getServiceProviderAction } from '../../redux/slices/users/serviceproviderSlice'
 
+
 const Home = () => {
   const dispatch = useDispatch()
+  const [isShowCompaintVisible, setShowCompaintVisible] = useState(false);
+  const [showselectedComplain, setShowselectedComplain] = useState(null);
   const loading1 = useSelector((state) => state?.serviceProviders.loading)
   const loading2 = useSelector((state) => state?.bookings?.loading)
   let bookings = useSelector((state) => state?.bookings?.allBooking?.data)
   bookings = bookings ? bookings : []
   const isLoading = loading1 || loading2
+
+
+   const openShowCompliant = (complain) => {
+    setShowselectedComplain(complain)
+    setShowCompaintVisible(true)
+   
+  };
+const closeShowCompliant = () => {
+    setShowCompaintVisible(true)
+    setShowselectedComplain(null)
+  };
+  
+
+   const handleStatus=(status,complain)=>{
+     console.log('status:',status),
+     console.log('compalin is',complain)
+     openShowCompliant(complain)
+  }
 
   useEffect(() => {
     Promise.all([
@@ -24,20 +46,20 @@ const Home = () => {
     switch ((status || '').toLowerCase()) {
       case 'confirmed':
         return { bg: '#e8f5e9', color: '#2e7d32' }
-      case 'pending':
+      case 'complained':
         return { bg: '#fff3e0', color: '#ef6c00' }
       case 'completed':
         return { bg: '#e3f2fd', color: '#1976d2' }
       case 'cancelled':
         return { bg: '#ffebee', color: '#c62828' }
-      default:
-        return { bg: '#f5f5f5', color: '#616161' }
+      
     }
   }
 
   if (isLoading) return <Loader />
 
   return (
+    <>
     <ScrollView 
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
@@ -57,9 +79,11 @@ const Home = () => {
               </View>
 
               <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
-                <Text style={[styles.statusText, { color: statusStyle.color }]}>
-                  {elem.status || 'Unknown'}
+                <TouchableOpacity>
+                <Text style={[styles.statusText, { color: statusStyle.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0])} >
+                {elem.status || "Unknown"}
                 </Text>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -85,6 +109,12 @@ const Home = () => {
         )
       })}
     </ScrollView>
+    {isShowCompaintVisible&&<ShowComplain
+        isModalVisible={isShowCompaintVisible}
+        toggleModal={closeShowCompliant}
+        data={showselectedComplain} // 传入当前点击的 booking
+      />}
+    </>
   )
 }
 
