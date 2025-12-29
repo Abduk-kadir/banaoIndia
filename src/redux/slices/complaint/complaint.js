@@ -6,9 +6,14 @@ const initialState = {
   loading: false,
   error: null,
   complaint: null,
+
   cComplaint: null,
   cError: null,
   cLoading: false,
+
+  cancelError: null,
+  cancelLoading: false,
+  cancelComplaint:false
 };
 
 export const createComplaintAction = createAsyncThunk(
@@ -54,8 +59,50 @@ export const createComplaintAction = createAsyncThunk(
   }
 );
 
+export const getComplaintAction = createAsyncThunk(
+  "/complaint/get",
+  async (booking, { rejectWithValue, getState }) => {
+    try {
+      const userData = await AsyncStorage.getItem("user");
+      const parsed = JSON.parse(userData);
+      const token = parsed?.token;
+
+      const { data } = await axios.get(`${baseURL}/api/completeComplaint/${booking}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (err) {
+      console.log("error getting complaints:", err.response.data);
+      return rejectWithValue(err?.response?.data);
+    }
+  }
+);
+
+export const cancelComplaintAction = createAsyncThunk(
+  "/complaint/cancel",
+  async (booking, { rejectWithValue, getState }) => {
+    try {
+      const userData = await AsyncStorage.getItem("user");
+      const parsed = JSON.parse(userData);
+      const token = parsed?.token;
+
+      const { data } = await axios.put(`${baseURL}/api/cancelComplaint/${booking}`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return data;
+    } catch (err) {
+      console.log("error cancelling complaint:", err.response.data);
+      return rejectWithValue(err?.response?.data);
+    }
+  }
+);
+
 const complaintSlice = createSlice({
-  name: "review",
+  name: "complaint",
   initialState,
   extraReducers: (builder) => {
    
@@ -72,6 +119,31 @@ const complaintSlice = createSlice({
       state.cLoading = false;
     });
     
+    builder.addCase(getComplaintAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getComplaintAction.fulfilled, (state, action) => {
+      state.complaint = action.payload;
+      state.loading = false;
+      state.error = null;
+    });
+    builder.addCase(getComplaintAction.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+    
+    builder.addCase(cancelComplaintAction.pending, (state, action) => {
+      state.cancelLoading = true;
+    });
+    builder.addCase(cancelComplaintAction.fulfilled, (state, action) => {  
+      state.cancelComplaint =action.payload;
+      state.cancelLoading = false;
+      state.cancelError = null;
+    });
+    builder.addCase(cancelComplaintAction.rejected, (state, action) => {
+      state.cancelError = action.payload;
+      state.cancelLoading = false;
+    });
         
   },
 });

@@ -30,9 +30,10 @@ const closeShowCompliant = () => {
   
 
    const handleStatus=(status,complain)=>{
-     console.log('status:',status),
-     console.log('compalin is',complain)
+  
+     if(status=='complained'){
      openShowCompliant(complain)
+    }
   }
 
   useEffect(() => {

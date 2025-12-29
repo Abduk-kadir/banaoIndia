@@ -67,8 +67,9 @@ const closeShowCompliant = () => {
   
 
   const handleStatus=(status,complain)=>{
-    // console.log('staus is:',status)
+    if(status=='complained'){
      openShowCompliant(complain)
+    }
   }
 
 
