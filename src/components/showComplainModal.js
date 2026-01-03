@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Image,
   ScrollView,
@@ -11,68 +12,73 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { useDispatch, useSelector } from 'react-redux';
+import { completeComplaintAction } from '../redux/slices/complaint/complaint';
+import { emailVerifyAction, enterEmailAction } from '../redux/slices/email/emailSlice';
 import Loader from './loader';
-import ToastMessage from './toastmessage';
 
 
 const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
   const dispatch=useDispatch()
  const loader=useSelector((state)=>state?.complaints?.cLoading);
- const success=useSelector((state)=>state?.complaints?.cComplaint?.success)
- const [otpPhone, setOtpPhone] = useState('');       // For Send OTP input
-  const [otpCode, setOtpCode] = useState('');
+ const success=useSelector((state)=>state?.complaints?.cComplaint?.success)     // For Send OTP input
+ const emailLoading = useSelector((state) => state?.emails?.emailLoading);
+ const loading = useSelector((state) => state.emails.verifyLoading);
+ const verifystatus = useSelector((state) => state?.emails?.verifyData?.success);
+ const completeComplainSuccess=useSelector((state)=>state?.complaints?.complaint?.success)
+ const completeComplainLoading=useSelector((state)=>state?.complaints?.loading)
+  const [otp, setOtpCode] = useState('');
+ const isVerifyRef = useRef(false);
  let {text}=data
  console.log('text is:',text)
  
-  const [message, setMessage] = useState('');
-  const [photo, setPhoto] = useState(null);
-// const loader=useSelector((state)=>state?.reviews?.cLoading);
-// const success=useSelector((state)=>state?.reviews?.cReview?.success)
-  const handleSendOtp = () => {
-    if (!otpPhone.trim()) {
-      ToastMessage('error', 'Please enter phone number or email');
-      return;
-    }
-    // Your API call to send OTP here
-    console.log('Sending OTP to:', otpPhone);
-    ToastMessage('success', `OTP sent to ${otpPhone}`);
-  };
-  const handleVerifyOtp = () => {
-    if (!otpCode.trim()) {
-      ToastMessage('error', 'Please enter the OTP');
-      return;
-    }
-    // Your API call to verify OTP here
-    console.log('Verifying OTP:', otpCode);
-    ToastMessage('success', 'OTP verified successfully');
+  const handleSendOtp = async() => {
+      let {email}=data
+     const result = await dispatch(enterEmailAction({ email }));
+     if (result.meta.requestStatus === 'fulfilled') {
+       Alert.alert('Success', 'OTP is sent to customer');
+     } else {
+       Alert.alert('error', 'something went wrong');
+     }
+   };
+  const handleVerifyOtp = async() => {
+    let {email}=data
+     console.log(email,otp)
+     const result = await dispatch(emailVerifyAction({ email, otp}));
+     if (result.meta.requestStatus === 'fulfilled') {
+
+       isVerifyRef.current=true
+       Alert.alert('Success', 'otp is varified');
+     } else {
+       Alert.alert('error', 'something went wrong');
+     }
   };
 
   // Handle submit
-  const handleSubmit = () => {
-    console.log('complain data:',data)
-   /* if (!message.trim()) {
-      Alert.alert('Error', 'Please write your complain');
-      return;
-    }*/
+   const handleSubmit = () => {
+    if(text=='Complete'){
+      
+       
+       if (!isVerifyRef.current) {
+       Alert.alert('Error', 'Please ask for verification code from customer');
+       return;
+     }
+     dispatch(completeComplaintAction({booking:data?.booking}))
 
-    // Here you would send the review to your backend
-   
-    // let complaintData={booking:data?._id, photo, complainText:message};
-   //  dispatch(createComplaintAction(complaintData))
-  
-   
-  };
+    }
+    
 
+   };
 
   useEffect(() => {
-  if (success) {
-   ToastMessage('success', 'complain create successfully');
+  console.log('success or not',completeComplainSuccess)
+  if (completeComplainSuccess) {
+  
    toggleModal();
   
   }
 
  
-}, [success]);
+}, [completeComplainSuccess]);
 const renderPhoto = ({ item }) => (
     <View style={styles.photoPreview}>
       <Image source={{ uri: item }} style={styles.previewImage} resizeMode="cover" />
@@ -127,13 +133,14 @@ const renderPhoto = ({ item }) => (
               <TextInput
                 style={styles.otpInput}
                 placeholder="Enter phone/email"
-                value={otpPhone}
-                onChangeText={setOtpPhone}
+                value={data?.email}
+                
                 keyboardType="default"
               />
-              <TouchableOpacity style={styles.otpButton} onPress={handleSendOtp}>
+              {emailLoading?<Loader/>:<TouchableOpacity style={styles.otpButton} onPress={handleSendOtp}>
                 <Text style={styles.otpButtonText}>Send OTP</Text>
-              </TouchableOpacity>
+              </TouchableOpacity>}
+
             </View>
 
             {/* Verify OTP Row */}
@@ -141,14 +148,15 @@ const renderPhoto = ({ item }) => (
               <TextInput
                 style={styles.otpInput}
                 placeholder="Enter OTP"
-                value={otpCode}
-                onChangeText={setOtpCode}
+                value={otp}
+                onChangeText={setOtpCode} 
                 keyboardType="numeric"
                 maxLength={6}
+               
               />
-              <TouchableOpacity style={styles.otpButton} onPress={handleVerifyOtp}>
+              {loading?<Loader/>:<TouchableOpacity style={styles.otpButton} onPress={handleVerifyOtp}>
                 <Text style={styles.otpButtonText}>Verify OTP</Text>
-              </TouchableOpacity>
+              </TouchableOpacity>}
             </View>
           </View>
            } 
@@ -156,7 +164,7 @@ const renderPhoto = ({ item }) => (
             
 
           {
-          loader?<Loader/>:<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          completeComplainLoading?<Loader/>:<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitText}>{text}</Text>
           </TouchableOpacity>
           }
@@ -214,7 +222,7 @@ const styles = StyleSheet.create({
  
   
  photoSection: {
-    marginVertical: 15,
+    marginVertical: 5,
   },
   photoPreview: {
     marginRight: 10,
@@ -256,7 +264,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 otpSection: {
-    marginVertical: 15,
+    marginVertical: 5,
   },
   otpRow: {
     flexDirection: 'row',

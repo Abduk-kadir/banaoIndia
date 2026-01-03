@@ -142,11 +142,11 @@ const closeShowCompliant = () => {
                   <View
                     style={[
                       styles.statusBadge,
-                      { backgroundColor: statusStyle.bg },
+                      { backgroundColor: statusStyle?.bg },
                     ]}
                   >
                     <TouchableOpacity>
-                    <Text style={[styles.statusText, { color: statusStyle.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0])} >
+                    <Text style={[styles.statusText, { color: statusStyle?.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0])} >
                       {elem.status || "Unknown"}
                     </Text>
                     </TouchableOpacity>

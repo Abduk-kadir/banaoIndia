@@ -13,7 +13,11 @@ const initialState = {
 
   cancelError: null,
   cancelLoading: false,
-  cancelComplaint:false
+  cancelComplaint:null,
+
+  
+  
+
 };
 
 export const createComplaintAction = createAsyncThunk(
@@ -59,15 +63,14 @@ export const createComplaintAction = createAsyncThunk(
   }
 );
 
-export const getComplaintAction = createAsyncThunk(
+export const completeComplaintAction = createAsyncThunk(
   "/complaint/get",
-  async (booking, { rejectWithValue, getState }) => {
+  async ({booking}, { rejectWithValue, getState }) => {
     try {
       const userData = await AsyncStorage.getItem("user");
       const parsed = JSON.parse(userData);
       const token = parsed?.token;
-
-      const { data } = await axios.get(`${baseURL}/api/completeComplaint/${booking}`, {
+      const { data } = await axios.put(`${baseURL}/api/completeComplaint/${booking}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -101,6 +104,7 @@ export const cancelComplaintAction = createAsyncThunk(
   }
 );
 
+
 const complaintSlice = createSlice({
   name: "complaint",
   initialState,
@@ -119,15 +123,15 @@ const complaintSlice = createSlice({
       state.cLoading = false;
     });
     
-    builder.addCase(getComplaintAction.pending, (state, action) => {
+    builder.addCase(completeComplaintAction.pending, (state, action) => {
       state.loading = true;
     });
-    builder.addCase(getComplaintAction.fulfilled, (state, action) => {
+    builder.addCase(completeComplaintAction.fulfilled, (state, action) => {
       state.complaint = action.payload;
       state.loading = false;
       state.error = null;
     });
-    builder.addCase(getComplaintAction.rejected, (state, action) => {
+    builder.addCase(completeComplaintAction.rejected, (state, action) => {
       state.error = action.payload;
       state.loading = false;
     });

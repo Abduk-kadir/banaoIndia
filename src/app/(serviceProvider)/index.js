@@ -5,12 +5,14 @@ import Loader from '../../components/loader'
 import ShowComplain from '../../components/showComplainModal'
 import { getBookingAction } from '../../redux/slices/booking/booking'
 import { getServiceProviderAction } from '../../redux/slices/users/serviceproviderSlice'
+//import { enterEmailAction,emailVerifyAction } from '../../redux/slices/email/emailSlice'
 
 
 const Home = () => {
   const dispatch = useDispatch()
   const [isShowCompaintVisible, setShowCompaintVisible] = useState(false);
   const [showselectedComplain, setShowselectedComplain] = useState(null);
+  const [customerEmail,setEmail]=useState(null)
   const loading1 = useSelector((state) => state?.serviceProviders.loading)
   const loading2 = useSelector((state) => state?.bookings?.loading)
   let bookings = useSelector((state) => state?.bookings?.allBooking?.data)
@@ -18,9 +20,13 @@ const Home = () => {
   const isLoading = loading1 || loading2
 
 
-   const openShowCompliant = (complain) => {
+   const openShowCompliant = (complain,customer) => {
+    console.log('customer is:',customer)
+    setEmail(customer?.email)
     setShowselectedComplain(complain)
+    
     setShowCompaintVisible(true)
+   
    
   };
 const closeShowCompliant = () => {
@@ -29,10 +35,11 @@ const closeShowCompliant = () => {
   };
   
 
-   const handleStatus=(status,complain)=>{
+   const handleStatus=(status,complain,customer)=>{
   
      if(status=='complained'){
-     openShowCompliant(complain)
+     
+     openShowCompliant(complain,customer)
     }
   }
 
@@ -53,6 +60,8 @@ const closeShowCompliant = () => {
         return { bg: '#e3f2fd', color: '#1976d2' }
       case 'cancelled':
         return { bg: '#ffebee', color: '#c62828' }
+      case 'complaint completed':
+      return { bg: '#7bbfafff', color: '#f5eddcff' }  
       
     }
   }
@@ -79,9 +88,9 @@ const closeShowCompliant = () => {
                 <Text style={styles.email}>{elem.customer[0]?.email}</Text>
               </View>
 
-              <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
+              <View style={[styles.statusBadge, { backgroundColor: statusStyle?.bg }]}>
                 <TouchableOpacity>
-                <Text style={[styles.statusText, { color: statusStyle.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0])} >
+                <Text style={[styles.statusText, { color: statusStyle?.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0],elem.customer[0])} >
                 {elem.status || "Unknown"}
                 </Text>
                 </TouchableOpacity>
@@ -113,7 +122,7 @@ const closeShowCompliant = () => {
     {isShowCompaintVisible&&<ShowComplain
         isModalVisible={isShowCompaintVisible}
         toggleModal={closeShowCompliant}
-        data={{...showselectedComplain,text:"Complete"}} // 传入当前点击的 booking
+        data={{...showselectedComplain,text:"Complete",email:customerEmail}} // 传入当前点击的 booking
       />}
     </>
   )
