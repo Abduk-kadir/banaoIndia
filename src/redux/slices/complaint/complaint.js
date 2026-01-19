@@ -13,74 +13,78 @@ const initialState = {
 
   cancelError: null,
   cancelLoading: false,
-  cancelComplaint:null,
-
-  
-  
-
+  cancelComplaint: null,
 };
 
 export const createComplaintAction = createAsyncThunk(
   "/complain/create",
   async (
-    { booking, photo,complainText},
-    { rejectWithValue, getState, dispatch }
+    { booking, photo, complainText },
+    { rejectWithValue, getState, dispatch },
   ) => {
     try {
       console.log("create  compain text  action is called");
 
       const formData = new FormData();
-      console.log('booking,',booking),
-      console.log('complaint:',complainText)
-      console.log('photo',photo)
+      (console.log("booking,", booking),
+        console.log("complaint:", complainText));
+      console.log("photo", photo);
       formData.append("booking", booking);
       formData.append("complainText", complainText);
-    
+
       if (photo) {
         formData.append("photo", {
           uri: photo,
           type: "image/jpeg", // you can detect mime if needed
-          name: photo.split('/').pop(), // extract filename from path
+          name: photo.split("/").pop(), // extract filename from path
         });
       }
-    
+
       const userData = await AsyncStorage.getItem("user");
       const parsed = JSON.parse(userData);
       const token = parsed?.token;
-     
-      const { data } = await axios.post(`${baseURL}/api/createComplaint`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+
+      const { data } = await axios.post(
+        `${baseURL}/api/createComplaint`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
-      console.log('data is:',data)
+      );
+      console.log("data is:", data);
       return data;
     } catch (err) {
       console.log("error is:", err.response.data);
       return rejectWithValue(err?.response?.data);
     }
-  }
+  },
 );
 
 export const completeComplaintAction = createAsyncThunk(
   "/complaint/get",
-  async ({booking}, { rejectWithValue, getState }) => {
+  async ({ booking }, { rejectWithValue, getState }) => {
     try {
       const userData = await AsyncStorage.getItem("user");
       const parsed = JSON.parse(userData);
       const token = parsed?.token;
-      const { data } = await axios.put(`${baseURL}/api/completeComplaint/${booking}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const { data } = await axios.put(
+        `${baseURL}/api/completeComplaint/${booking}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
+
       return data;
     } catch (err) {
       console.log("error getting complaints:", err.response.data);
       return rejectWithValue(err?.response?.data);
     }
-  }
+  },
 );
 
 export const cancelComplaintAction = createAsyncThunk(
@@ -90,26 +94,29 @@ export const cancelComplaintAction = createAsyncThunk(
       const userData = await AsyncStorage.getItem("user");
       const parsed = JSON.parse(userData);
       const token = parsed?.token;
+      console.log("cancel complain is called", booking);
 
-      const { data } = await axios.put(`${baseURL}/api/cancelComplaint/${booking}`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const { data } = await axios.put(
+        `${baseURL}/api/cancelComplaint/${booking}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       return data;
     } catch (err) {
       console.log("error cancelling complaint:", err.response.data);
       return rejectWithValue(err?.response?.data);
     }
-  }
+  },
 );
-
 
 const complaintSlice = createSlice({
   name: "complaint",
   initialState,
   extraReducers: (builder) => {
-   
     builder.addCase(createComplaintAction.pending, (state, action) => {
       state.cLoading = true;
     });
@@ -122,7 +129,7 @@ const complaintSlice = createSlice({
       state.cError = action.payload;
       state.cLoading = false;
     });
-    
+
     builder.addCase(completeComplaintAction.pending, (state, action) => {
       state.loading = true;
     });
@@ -135,12 +142,12 @@ const complaintSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     });
-    
+
     builder.addCase(cancelComplaintAction.pending, (state, action) => {
       state.cancelLoading = true;
     });
-    builder.addCase(cancelComplaintAction.fulfilled, (state, action) => {  
-      state.cancelComplaint =action.payload;
+    builder.addCase(cancelComplaintAction.fulfilled, (state, action) => {
+      state.cancelComplaint = action.payload;
       state.cancelLoading = false;
       state.cancelError = null;
     });
@@ -148,7 +155,6 @@ const complaintSlice = createSlice({
       state.cancelError = action.payload;
       state.cancelLoading = false;
     });
-        
   },
 });
 //generate reducer

@@ -1,5 +1,5 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react'; // Don't forget this!
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useState } from "react"; // Don't forget this!
 import {
   Image,
   ScrollView,
@@ -9,15 +9,14 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import Complain from '../../../components/complain';
+import Complain from "../../../components/complain";
 import Loader from "../../../components/loader";
-import MakeReviewModal from '../../../components/makeReviewModal';
-import ShowComplain from '../../../components/showComplainModal';
+import MakeReviewModal from "../../../components/makeReviewModal";
+import ShowComplain from "../../../components/showComplainModal";
 import {
   getcustomerBookingAction,
   resetcreateBooking,
 } from "../../../redux/slices/booking/booking";
-
 
 const Booking = () => {
   const dispatch = useDispatch();
@@ -39,52 +38,47 @@ const Booking = () => {
     setSelectedService(serviceData);
     setIsModalVisible(true);
   };
- const openComplainModal = (serviceData) => {
-   setComSelectedService(serviceData);
+  const openComplainModal = (serviceData) => {
+    setComSelectedService(serviceData);
     setComIsModalVisible(true);
   };
 
-  
   const closeModal = () => {
     setIsModalVisible(false);
     setSelectedService(null);
   };
 
- const closeComplianModal = () => {
+  const closeComplianModal = () => {
     setComIsModalVisible(false);
     setComSelectedService(null);
   };
 
- const openShowCompliant = (complain) => {
-    setShowselectedComplain(complain)
-    setShowCompaintVisible(true)
-   
+  const openShowCompliant = (complain) => {
+    setShowselectedComplain(complain);
+    setShowCompaintVisible(true);
   };
-const closeShowCompliant = () => {
-    setShowCompaintVisible(false)
-    setShowselectedComplain(null)
+  const closeShowCompliant = () => {
+    setShowCompaintVisible(false);
+    setShowselectedComplain(null);
   };
-  
 
-  const handleStatus=(status,complain)=>{
-    if(status=='complained'){
-     openShowCompliant(complain)
+  const handleStatus = (status, complain) => {
+    if (status == "complained") {
+      console.log("ccompalins is showing");
+      openShowCompliant(complain);
     }
-  }
+  };
 
-
- useFocusEffect(
-  useCallback(() => {
-    Promise.all([
-      dispatch(getcustomerBookingAction({})),
-      dispatch(resetcreateBooking({})),
-    ]);
-
-  }, [dispatch])
-);
+  useFocusEffect(
+    useCallback(() => {
+      Promise.all([
+        dispatch(getcustomerBookingAction({})),
+        dispatch(resetcreateBooking({})),
+      ]);
+    }, [dispatch]),
+  );
 
   const getStatusStyle = (status) => {
-    
     switch ((status || "").toLowerCase()) {
       case "confirmed":
         return { bg: "#e8f5e9", color: "#2e7d32" };
@@ -94,7 +88,8 @@ const closeShowCompliant = () => {
         return { bg: "#e3f2fd", color: "#1976d2" };
       case "cancelled":
         return { bg: "#ffebee", color: "#c62828" };
-      
+      case "complaint cancelled":
+        return { bg: "#5fb1aaff", color: "#ffebee" };
     }
   };
 
@@ -102,112 +97,143 @@ const closeShowCompliant = () => {
 
   return (
     <>
-    <ScrollView
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      {bookings.map((elem, index) => {
-        const statusStyle = getStatusStyle(elem.status);
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        {bookings.map((elem, index) => {
+          const statusStyle = getStatusStyle(elem.status);
 
-        return (
-          <View key={index} style={styles.card}>
-            {/* Header: Customer Name + Status */}
-            <View style={styles.header}>
-              <View style={styles.leftside}>
-                <View>
-                  <Image
-                    source={{ uri: elem.serviceprovider[0]?.photo }}
-                    style={styles.image}
-                  />
-                  <Text style={styles.customerName}>
-                    {elem.serviceprovider[0]?.name || "Unknown Customer"}
-                  </Text>
-                  <Text style={styles.email}>
-                    {elem.serviceprovider[0]?.email}
-                  </Text>
-                  <Text>
-                    {elem.bookingDate
-                      ? new Date(elem.bookingDate).toLocaleDateString("en-GB", {
-                          weekday: "short",
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : "-"}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.rightside}>
-                <View>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      { backgroundColor: statusStyle?.bg },
-                    ]}
-                  >
-                    <TouchableOpacity>
-                    <Text style={[styles.statusText, { color: statusStyle?.color }]} onPress={()=>handleStatus(elem.status,elem?.complaints[0])} >
-                      {elem.status || "Unknown"}
+          return (
+            <View key={index} style={styles.card}>
+              {/* Header: Customer Name + Status */}
+              <View style={styles.header}>
+                <View style={styles.leftside}>
+                  <View>
+                    <Image
+                      source={{ uri: elem.serviceprovider[0]?.photo }}
+                      style={styles.image}
+                    />
+                    <Text style={styles.customerName}>
+                      {elem.serviceprovider[0]?.name || "Unknown Customer"}
                     </Text>
-                    </TouchableOpacity>
+                    <Text style={styles.email}>
+                      {elem.serviceprovider[0]?.email}
+                    </Text>
+                    <Text>
+                      {elem.bookingDate
+                        ? new Date(elem.bookingDate).toLocaleDateString(
+                            "en-GB",
+                            {
+                              weekday: "short",
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          )
+                        : "-"}
+                    </Text>
                   </View>
-                  <Text style={styles.value}>{elem.category || "-"}</Text>
-                  <Text style={styles.value}>{elem.work || "-"}</Text>
-                  <Text style={styles.price}>₹ {elem.paymentStatus=='paid'?elem.price+' Paid':elem.price}</Text>
+                </View>
+                <View style={styles.rightside}>
+                  <View>
+                    <View
+                      style={[
+                        styles.statusBadge,
+                        { backgroundColor: statusStyle?.bg },
+                      ]}
+                    >
+                      <TouchableOpacity>
+                        <Text
+                          style={[
+                            styles.statusText,
+                            { color: statusStyle?.color },
+                          ]}
+                          onPress={() =>
+                            handleStatus(elem.status, elem?.complaints[0])
+                          }
+                        >
+                          {elem.status || "Unknown"}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={styles.value}>{elem.category || "-"}</Text>
+                    <Text style={styles.value}>{elem.work || "-"}</Text>
+                    <Text style={styles.price}>
+                      ₹{" "}
+                      {elem.paymentStatus == "paid"
+                        ? elem.price + " Paid"
+                        : elem.price}
+                    </Text>
+                  </View>
                 </View>
               </View>
+
+              {/* Consistent Rows */}
+
+              <View style={styles.buttonRow}>
+                {elem.status == "confirmed" ? (
+                  <>
+                    <TouchableOpacity style={styles.cancelBtn}>
+                      <Text style={styles.cancelBtnText}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.payBtn}>
+                      <Text style={styles.cancelBtnText}>Pay</Text>
+                    </TouchableOpacity>
+                  </>
+                ) : elem.status != "cancelled" &&
+                  elem.status != "complained" ? (
+                  <>
+                    <TouchableOpacity
+                      style={styles.reviewBtn}
+                      onPress={() => openReviewModal(elem)}
+                    >
+                      <Text style={styles.reviewBtnText}>Review</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.complainBtn}
+                      onPress={() => openComplainModal(elem)}
+                    >
+                      <Text style={styles.cancelBtnText}>Complain</Text>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  ""
+                )}
+              </View>
             </View>
+          );
+        })}
+      </ScrollView>
+      {isModalVisible && (
+        <MakeReviewModal
+          isModalVisible={isModalVisible}
+          toggleModal={closeModal}
+          data={selectedService} // 传入当前点击的 booking
+        />
+      )}
+      {isComModalVisible && (
+        <Complain
+          isModalVisible={isComModalVisible}
+          toggleModal={closeComplianModal}
+          data={comselectedService} // 传入当前点击的 booking
+        />
+      )}
 
-            {/* Consistent Rows */}
-
-            <View style={styles.buttonRow}>
-             {elem.status=='confirmed'?( 
-              <>
-              <TouchableOpacity style={styles.cancelBtn}>
-                <Text style={styles.cancelBtnText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.payBtn}>
-                <Text style={styles.cancelBtnText}>Pay</Text>
-              </TouchableOpacity>
-              </>):(elem.status!='cancelled'&&elem.status!='complained'? <>
-               <TouchableOpacity style={styles.reviewBtn} onPress={() => openReviewModal(elem)}>
-                <Text style={styles.reviewBtnText}>Review</Text>
-              </TouchableOpacity>
-               <TouchableOpacity style={styles.complainBtn}  onPress={() => openComplainModal(elem)}>
-                <Text style={styles.cancelBtnText}>Complain</Text>
-              </TouchableOpacity>
-              </>:"")
-             
-
-              }
-            </View>
-          </View>
-        );
-      })}
-    </ScrollView>
-    {isModalVisible&&<MakeReviewModal
-        isModalVisible={isModalVisible}
-        toggleModal={closeModal}
-        data={selectedService} // 传入当前点击的 booking
-      />}
-      {isComModalVisible&&<Complain
-        isModalVisible={isComModalVisible}
-        toggleModal={closeComplianModal}
-        data={comselectedService} // 传入当前点击的 booking
-      />}
-
-      {isShowCompaintVisible&&<ShowComplain
-        isModalVisible={isShowCompaintVisible}
-        toggleModal={closeShowCompliant}
-        data={{...showselectedComplain,text:"Cancel"}} // 传入当前点击的 booking
-      />}
+      {isShowCompaintVisible && (
+        <ShowComplain
+          isModalVisible={isShowCompaintVisible}
+          toggleModal={closeShowCompliant}
+          data={{ ...showselectedComplain, text: "Cancel" }} // 传入当前点击的 booking
+        />
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    padding: 10,
     paddingBottom: 40,
     backgroundColor: "white",
   },
@@ -258,8 +284,8 @@ const styles = StyleSheet.create({
   },
   statusBadge: {
     paddingHorizontal: 5,
-    paddingVertical: 5,
-    borderRadius: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
     alignSelf: "flex-end", // keeps it aligned right
     marginBottom: 10,
   },
@@ -310,7 +336,7 @@ const styles = StyleSheet.create({
     fontSize: 14.5,
     fontWeight: "600",
   },
-   complainBtn: {
+  complainBtn: {
     backgroundColor: "#f6af45ff",
     paddingVertical: 10,
     paddingHorizontal: 30,
@@ -321,10 +347,10 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     paddingHorizontal: 32,
     borderRadius: 12,
-      // orange border to make it pop
+    // orange border to make it pop
   },
   reviewBtnText: {
-    color: "#271203ff",           // orange text
+    color: "#271203ff", // orange text
     fontSize: 15,
     fontWeight: "600",
   },
