@@ -112,6 +112,13 @@ export const cancelComplaintAction = createAsyncThunk(
     }
   },
 );
+export const resetComplain = createAsyncThunk(
+  "/compain/reset",
+  console.log("reset complain called"),
+  async ({}, { rejectWithValue, getState, dispatch }) => {
+    return {};
+  },
+);
 
 const complaintSlice = createSlice({
   name: "complaint",
@@ -154,6 +161,10 @@ const complaintSlice = createSlice({
     builder.addCase(cancelComplaintAction.rejected, (state, action) => {
       state.cancelError = action.payload;
       state.cancelLoading = false;
+    });
+
+    builder.addCase(resetComplain.pending, (state, action) => {
+      state.cComplaint = null;
     });
   },
 });

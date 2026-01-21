@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   cancelComplaintAction,
   completeComplaintAction,
+  resetComplain,
 } from "../redux/slices/complaint/complaint";
 import {
   emailVerifyAction,
@@ -90,6 +91,7 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
     console.log("success or not", completeComplainSuccess);
     if (completeComplainSuccess) {
       toggleModal();
+      dispatch(resetComplain({}));
     }
     if (cancelComplainSuccess) {
       toggleModal();

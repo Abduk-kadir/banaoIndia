@@ -181,6 +181,9 @@ const Booking = () => {
                       <Text style={styles.cancelBtnText}>Pay</Text>
                     </TouchableOpacity>
                   </>
+                ) : elem.status == "complaint cancelled" ||
+                  elem.status == "cancelled" ? (
+                  ""
                 ) : elem.status != "cancelled" &&
                   elem.status != "complained" ? (
                   <>
