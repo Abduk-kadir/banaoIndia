@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   cancelComplaintAction,
   completeComplaintAction,
-  resetComplain,
+  resetCancelComplain,
 } from "../redux/slices/complaint/complaint";
 import {
   emailVerifyAction,
@@ -24,6 +24,8 @@ import {
 import Loader from "./loader";
 
 const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
+  console.log("show complain is showing");
+  console.log("*********************************");
   const dispatch = useDispatch();
   const loader = useSelector((state) => state?.complaints?.cLoading);
   const success = useSelector(
@@ -49,7 +51,6 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
   const [otp, setOtpCode] = useState("");
   const isVerifyRef = useRef(false);
   let { text } = data;
-  console.log("text is:", text);
 
   const handleSendOtp = async () => {
     let { email } = data;
@@ -62,7 +63,7 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
   };
   const handleVerifyOtp = async () => {
     let { email } = data;
-    console.log(email, otp);
+
     const result = await dispatch(emailVerifyAction({ email, otp }));
     if (result.meta.requestStatus === "fulfilled") {
       isVerifyRef.current = true;
@@ -82,18 +83,17 @@ const ShowComplain = ({ isModalVisible, toggleModal, data }) => {
       dispatch(completeComplaintAction({ booking: data?.booking }));
     }
     if (text == "Cancel") {
-      console.log(data?.booking);
       dispatch(cancelComplaintAction(data?.booking));
     }
   };
 
   useEffect(() => {
-    console.log("success or not", completeComplainSuccess);
     if (completeComplainSuccess) {
       toggleModal();
-      dispatch(resetComplain({}));
     }
     if (cancelComplainSuccess) {
+      console.log("canel is calling");
+      dispatch(resetCancelComplain({}));
       toggleModal();
     }
   }, [completeComplainSuccess, cancelComplainSuccess]);

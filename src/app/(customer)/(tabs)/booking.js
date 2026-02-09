@@ -39,6 +39,7 @@ const Booking = () => {
     setIsModalVisible(true);
   };
   const openComplainModal = (serviceData) => {
+    console.log("open compaling");
     setComSelectedService(serviceData);
     setComIsModalVisible(true);
   };
