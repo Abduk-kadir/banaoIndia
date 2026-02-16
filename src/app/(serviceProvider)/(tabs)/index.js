@@ -41,7 +41,7 @@ const Home = () => {
       openShowCompliant(complain, customer);
     }
   };
-
+  const hasBookings = bookings.length > 0;
   useEffect(() => {
     Promise.all([
       dispatch(getServiceProviderAction({})),
@@ -72,64 +72,77 @@ const Home = () => {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        {bookings.map((elem, index) => {
-          const statusStyle = getStatusStyle(elem.status);
+        {!hasBookings ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyTitle}>No bookings yet</Text>
+            <Text style={styles.emptySubtitle}>
+              When customers book your services, they will appear here.
+            </Text>
+            {/* Optional: add illustration / icon here later */}
+          </View>
+        ) : (
+          bookings.map((elem, index) => {
+            const statusStyle = getStatusStyle(elem.status);
 
-          return (
-            <View key={index} style={styles.card}>
-              {/* Header: Customer Name + Status */}
-              <View style={styles.header}>
-                <View>
-                  <Text style={styles.customerName}>
-                    {elem.customer[0]?.name || "Unknown Customer"}
-                  </Text>
-                  <Text style={styles.email}>{elem.customer[0]?.email}</Text>
-                </View>
-
-                <View
-                  style={[
-                    styles.statusBadge,
-                    { backgroundColor: statusStyle?.bg },
-                  ]}
-                >
-                  <TouchableOpacity>
-                    <Text
-                      style={[styles.statusText, { color: statusStyle?.color }]}
-                      onPress={() =>
-                        handleStatus(
-                          elem.status,
-                          elem?.complaints[0],
-                          elem.customer[0],
-                        )
-                      }
-                    >
-                      {elem.status || "Unknown"}
+            return (
+              <View key={index} style={styles.card}>
+                {/* Header: Customer Name + Status */}
+                <View style={styles.header}>
+                  <View>
+                    <Text style={styles.customerName}>
+                      {elem.customer[0]?.name || "Unknown Customer"}
                     </Text>
-                  </TouchableOpacity>
+                    <Text style={styles.email}>{elem.customer[0]?.email}</Text>
+                  </View>
+
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { backgroundColor: statusStyle?.bg },
+                    ]}
+                  >
+                    <TouchableOpacity>
+                      <Text
+                        style={[
+                          styles.statusText,
+                          { color: statusStyle?.color },
+                        ]}
+                        onPress={() =>
+                          handleStatus(
+                            elem.status,
+                            elem?.complaints[0],
+                            elem.customer[0],
+                          )
+                        }
+                      >
+                        {elem.status || "Unknown"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
 
-              {/* Consistent Rows */}
-              <View style={styles.row}>
-                <Text style={styles.label}>Equipment</Text>
-                <Text style={styles.value}>{elem.category || "-"}</Text>
-              </View>
+                {/* Consistent Rows */}
+                <View style={styles.row}>
+                  <Text style={styles.label}>Equipment</Text>
+                  <Text style={styles.value}>{elem.category || "-"}</Text>
+                </View>
 
-              <View style={styles.row}>
-                <Text style={styles.label}>Work</Text>
-                <Text style={styles.value}>{elem.work || "-"}</Text>
-              </View>
+                <View style={styles.row}>
+                  <Text style={styles.label}>Work</Text>
+                  <Text style={styles.value}>{elem.work || "-"}</Text>
+                </View>
 
-              <View style={styles.row}>
-                <Text style={styles.label}>Price</Text>
-                <Text style={styles.price}>Rs {elem.price || 0}</Text>
+                <View style={styles.row}>
+                  <Text style={styles.label}>Price</Text>
+                  <Text style={styles.price}>Rs {elem.price || 0}</Text>
+                </View>
+                <TouchableOpacity style={styles.quotationBtn}>
+                  <Text style={styles.quotationBtnText}>Other Charge</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.quotationBtn}>
-                <Text style={styles.quotationBtnText}>Other Charge</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        })}
+            );
+          })
+        )}
       </ScrollView>
       {isShowCompaintVisible && (
         <ShowComplain
@@ -148,9 +161,33 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
     paddingBottom: 40,
     backgroundColor: "white",
+  },
+  emptyContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
+  emptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 60,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#1F2937",
+    marginBottom: 12,
+  },
+  emptySubtitle: {
+    fontSize: 18,
+    color: "#64340d",
+    textAlign: "center",
+    lineHeight: 24,
+    maxWidth: "80%",
+    fontWeight: 500,
   },
   card: {
     backgroundColor: "#eaece4ff",
